@@ -9,7 +9,7 @@ import {
   WordPairsProp,
   LocalizationProps,
   LanguageCodeProps,
-} from "@/app/lib/definitions";
+} from "@/lib/definitions";
 
 interface FormType {
   languages: LanguagesProps[];

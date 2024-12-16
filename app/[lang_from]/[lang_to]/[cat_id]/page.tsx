@@ -1,7 +1,7 @@
-import WordList from "@/app/ui/list/wordList";
-import WordsWrapper from "@/app/ui/components/wordsWrapper";
+import WordList from "@/ui/list/wordList";
+import WordsWrapper from "@/ui/basis/wordsWrapper";
 
-export default async function WordPairListPageListPage({
+export default async function WordPairListPage({
   params,
 }: {
   params: Promise<{

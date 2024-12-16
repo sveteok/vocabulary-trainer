@@ -1,5 +1,5 @@
-import WordsWrapper from "@/app/ui/components/wordsWrapper";
-import { WriteCards } from "@/app/ui/cards/write/writeCards";
+import WordsWrapper from "@/ui/basis/wordsWrapper";
+import { WriteCards } from "@/ui/cards/write/writeCards";
 
 export default async function WritePage({
   params,

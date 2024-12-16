@@ -1,5 +1,5 @@
-import WordsWrapper from "@/app/ui/components/wordsWrapper";
-import { QuizeCards } from "@/app/ui/cards/quize/quizeCards";
+import WordsWrapper from "@/ui/basis/wordsWrapper";
+import { QuizeCards } from "@/ui/cards/quize/quizeCards";
 
 export default async function QuizePage({
   params,

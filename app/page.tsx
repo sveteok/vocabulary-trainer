@@ -5,10 +5,10 @@ import { useRouter } from "next/navigation";
 import NavigateNextRoundedIcon from "@mui/icons-material/NavigateNextRounded";
 
 import { DictionaryContext } from "@/store/dict-context";
-import FormItemGroup from "@/app/ui/basis/formItemGroup";
-import MainContainer from "@/app/ui/basis/mainContainer";
-import SelectLanguage from "@/app/ui/basis/selectLanguage";
-import SubMenu from "@/app/ui/basis/sub-menu";
+import FormItemGroup from "@/ui/basis/formItemGroup";
+import MainContainer from "@/ui/basis/mainContainer";
+import SelectLanguage from "@/ui/basis/selectLanguage";
+import SubMenu from "@/ui/basis/subMenu";
 
 export default function LangFromPage() {
   const router = useRouter();

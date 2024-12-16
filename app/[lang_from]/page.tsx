@@ -2,11 +2,11 @@
 
 import NavigateNextRoundedIcon from "@mui/icons-material/NavigateNextRounded";
 
-import FormItemGroup from "@/app/ui/basis/formItemGroup";
-import MainContainer from "@/app/ui/basis/mainContainer";
-import SubMenu from "@/app/ui/basis/sub-menu";
+import FormItemGroup from "@/ui/basis/formItemGroup";
+import MainContainer from "@/ui/basis/mainContainer";
+import SubMenu from "@/ui/basis/subMenu";
 
-import { useTranslatedLanguage } from "../hooks/useTranslatedLanguage";
+import { useTranslatedLanguage } from "@/hooks/useTranslatedLanguage";
 
 export default function LangToPage() {
   const {

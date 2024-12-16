@@ -1,5 +1,5 @@
-import { CardSlideShow } from "@/app/ui/cards/slide/cardSlideShow";
-import WordsWrapper from "@/app/ui/components/wordsWrapper";
+import { CardSlideShow } from "@/ui/cards/slide/cardSlideShow";
+import WordsWrapper from "@/ui/basis/wordsWrapper";
 
 export default async function CardsPage({
   params,

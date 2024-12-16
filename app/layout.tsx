@@ -12,13 +12,13 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-import SiteNavigation from "@/app/ui/basis/siteNavigation";
+import SiteNavigation from "@/ui/basis/siteNavigation";
 
 import {
   fetchAllCategories,
   fetchAllLanguages,
   fetchLocalization,
-} from "@/app/lib/data";
+} from "@/lib/data";
 
 import DictionaryContextProvider from "@/store/dict-context";
 

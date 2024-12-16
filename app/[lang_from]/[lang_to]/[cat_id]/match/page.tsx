@@ -1,5 +1,5 @@
-import WordsWrapper from "@/app/ui/components/wordsWrapper";
-import { MemoryCards } from "@/app/ui/cards/match/memoryCards";
+import WordsWrapper from "@/ui/basis/wordsWrapper";
+import { MemoryCards } from "@/ui/cards/match/memoryCards";
 
 export default async function MatchPage({
   params,

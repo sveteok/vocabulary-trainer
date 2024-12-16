@@ -1,8 +1,8 @@
 import { Suspense } from "react";
 
-import Category from "@/app/ui/category/category";
+import Category from "@/ui/basis/category";
 
-import { fetchAllCategories } from "@/app/lib/data";
+import { fetchAllCategories } from "@/lib/data";
 
 export default async function CategoryListPage({
   params,
