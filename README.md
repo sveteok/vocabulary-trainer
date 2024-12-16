@@ -36,18 +36,18 @@ To run this project locally, ensure you have:
 1.  **Clone the Repository**
     Run the following command to clone the project:
 
-        ```bash
-        git clone https://github.com/sveteok/vocabulary-trainer.git
-        ```
+    ```bash
+    git clone https://github.com/sveteok/vocabulary-trainer.git
+    ```
 
 2.  **Set Up Environment Variables**
-    Copy the `.env.example` file to `.env.local` in the project root and populate it with your database details:
-    `bash
+    Copy the ```.env.example``` file to ```.env.local``` in the project root and populate it with your database details:
+    ```bash
     DB_HOST=<postgres hostname>
     DB_USER=<postgres database user>
     DB_PASS=<postgres database password>
     DB_NAME=<postgres database name>
-    `
+    ```
 3.  **Seed the Database**
     Populate the database with placeholder data:
 
@@ -57,14 +57,15 @@ To run this project locally, ensure you have:
 
 4.  **Start the Development Server**
     Use one of the following commands to start the server:
-    `bash
+    
+    ```bash
     npm run dev
     # or
     yarn dev
     # or
     pnpm dev
-    `
-5.  **Access the App**
+    ```
+6.  **Access the App**
     Open http://localhost:3000 in your browser to view the application.
 
 ## Project Structure
