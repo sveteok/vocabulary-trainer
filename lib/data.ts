@@ -13,7 +13,7 @@ import {
   WordPairsProp,
 } from "@/lib/definitions";
 
-import { unstable_cache, unstable_noStore as noStore } from "next/cache";
+import { unstable_cache } from "next/cache";
 
 async function connectToDb() {
   const DB_USER = process.env.DB_USER || "postgres";
