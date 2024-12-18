@@ -1,7 +1,4 @@
-"use server";
-
-import { Client } from "pg";
-import pg from "pg";
+import { sql } from "@vercel/postgres";
 
 import {
   words,
@@ -13,30 +10,33 @@ import {
   wordPairs_en_fi_basic,
 } from "@/lib/placeholder-data";
 
-import "@/envConfig";
-
 import {
   LanguagesProps,
+  CategoryProps,
   CategoryTranslationProps,
   WordProps,
   WordPairsProps,
+  LanguageCodeProps,
   LocalizationProps,
 } from "@/lib/definitions";
 
-async function seedLanguages(client: Client) {
+async function seedLanguages() {
   try {
-    const createTable = await client.query(
-      "CREATE TABLE IF NOT EXISTS languages (id VARCHAR(10) PRIMARY KEY, name VARCHAR(100) NOT NULL);"
-    );
+    const createTable = await sql`
+        CREATE TABLE IF NOT EXISTS languages (
+          code VARCHAR(10) PRIMARY KEY,
+          name VARCHAR(100) NOT NULL,
+        );
+      `;
 
     console.log(`Created "languages" table`);
 
     const insertedLanguages = await Promise.all(
-      languages.map((language: LanguagesProps) =>
-        client.query(
-          "INSERT INTO languages (id, name) VALUES ($1::text, $2::text) ON CONFLICT (id) DO NOTHING",
-          [language.id, language.name]
-        )
+      languages.map(
+        (language: LanguagesProps) =>
+          sql`
+          INSERT INTO languages (id, name) VALUES ('${language.id}'::text, '${language.name}'::text,') ON CONFLICT (id) DO NOTHING
+         `
       )
     );
 
@@ -52,23 +52,25 @@ async function seedLanguages(client: Client) {
   }
 }
 
-async function seedCategories(client: Client) {
+async function seedCategories() {
   try {
-    await client.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`);
+    await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
 
-    const createTable = await client.query(
-      "CREATE TABLE IF NOT EXISTS categories (id UUID PRIMARY KEY DEFAULT uuid_generate_v4(), name VARCHAR(100) NOT NULL);"
+    const createTable = await sql`
+    CREATE TABLE IF NOT EXISTS categories (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(), 
+    name VARCHAR(100) NOT NULL
     );
-
+  );
+`;
     console.log(`Created "categories" table`);
 
     const insertedCategories = await Promise.all(
-      categories.map((category: { id: string; name: string }) => {
-        return client.query(
-          `INSERT INTO categories (id, name) VALUES ($1::uuid, $2::text) ON CONFLICT (id) DO NOTHING`,
-          [category.id, category.name]
-        );
-      })
+      categories.map(
+        (category: { id: string; name: string }) => sql`
+           INSERT INTO categories (id, name) VALUES ('${category.id}'::uuid, '${category.name}'::text,') ON CONFLICT (id) DO NOTHING
+           `
+      )
     );
 
     console.log(`Seeded ${insertedCategories.length} categories`);
@@ -83,10 +85,12 @@ async function seedCategories(client: Client) {
   }
 }
 
-async function seedCategoryTranslations(client: Client) {
+async function seedCategoryTranslations() {
   try {
-    const createTable = await client.query(`
-        CREATE TABLE IF NOT EXISTS categoryTranslations (
+    await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+
+    const createTable = await sql`
+    CREATE TABLE IF NOT EXISTS categoryTranslations (
         id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
         category_id UUID NOT NULL,
         language_code VARCHAR(10) NOT NULL,
@@ -100,27 +104,19 @@ async function seedCategoryTranslations(client: Client) {
           REFERENCES languages(id)
           ON DELETE CASCADE,
         UNIQUE (category_id, language_code)
-      );
-    `);
+  );
+`;
 
-    console.log(`Created "categoryTranslations" table`);
+    console.log(`Created "categories" table`);
 
     const insertedCategoryTranslations = await Promise.all(
       categoryTranslations.map(
         (categoryTranslation: CategoryTranslationProps) =>
-          client.query(
-            `
+          sql`
         INSERT INTO categoryTranslations (category_id, language_code, translated_name)
-        VALUES ($1::uuid, $2::text,  $3::text)
-        ON CONFLICT (category_id, language_code) DO UPDATE SET translated_name = $4::text;
-      `,
-            [
-              categoryTranslation.category_id,
-              categoryTranslation.language_code,
-              categoryTranslation.translated_name,
-              categoryTranslation.translated_name,
-            ]
-          )
+        VALUES ('${categoryTranslation.category_id}'::uuid, '${categoryTranslation.language_code}'::text,  '${categoryTranslation.translated_name}'::text)
+        ON CONFLICT (category_id, language_code) DO UPDATE SET translated_name = '${categoryTranslation.translated_name}'::text;
+      `
       )
     );
 
@@ -138,11 +134,11 @@ async function seedCategoryTranslations(client: Client) {
   }
 }
 
-async function seedWords(client: Client) {
+async function seedWords() {
   try {
-    await client.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`);
+    await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
 
-    const createTable = await client.query(`
+    const createTable = await sql`
         CREATE TABLE IF NOT EXISTS words (
         id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
         category_id UUID NOT NULL,
@@ -159,30 +155,20 @@ async function seedWords(client: Client) {
           ON DELETE CASCADE,
         UNIQUE (category_id, language_code, translated_name)
       );
-    `);
+    `;
 
     console.log(`Created "words" table`);
 
     const insertedWords = await Promise.all(
-      words.map((word: WordProps) =>
-        client.query(
-          `
+      words.map(
+        (word: WordProps) =>
+          sql`
         INSERT INTO words (id, category_id, language_code, translated_name, description)
-        VALUES ($1::uuid, $2::uuid, $3::text,  $4::text,  $5::text)
-        ON CONFLICT (category_id, language_code, translated_name) DO UPDATE SET description = $6::text;
-      `,
-          [
-            word.id,
-            word.category_id,
-            word.language_code,
-            word.translated_name,
-            word.description,
-            word.description,
-          ]
-        )
+        VALUES ('${word.id}'::uuid, '${word.category_id}'::uuid, '${word.language_code}'::text,  '${word.translated_name}'::text,  '${word.description}'::text)
+        ON CONFLICT (category_id, language_code, translated_name) DO UPDATE SET description = '${word.description}'::text;
+      `
       )
     );
-
     console.log(`Seeded ${insertedWords.length} words`);
 
     return {
@@ -195,11 +181,11 @@ async function seedWords(client: Client) {
   }
 }
 
-async function seedWordPairs(client: Client) {
+async function seedWordPairs() {
   try {
-    await client.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`);
+    await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
 
-    const createTable = await client.query(`
+    const createTable = await sql`
     CREATE TABLE IF NOT EXISTS WordPairs (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
     word_id UUID NOT NULL,
@@ -214,20 +200,17 @@ async function seedWordPairs(client: Client) {
       ON DELETE CASCADE,
     UNIQUE (word_id, translated_word_id)
   );
-`);
-
+`;
     console.log(`Created "WordPairs" table`);
 
     const insertedWordPairs = await Promise.all(
-      wordPairs.map((wordPair: WordPairsProps) =>
-        client.query(
-          `
+      wordPairs.map(
+        (wordPair: WordPairsProps) =>
+          sql`
         INSERT INTO WordPairs (id, word_id, translated_word_id)
-        VALUES ($1::uuid, $2::uuid, $3::uuid)
+        VALUES ('${wordPair.id}'::uuid, '${wordPair.word_id}'::uuid, '${wordPair.translated_word_id}'::uuid)
         ON CONFLICT (word_id, translated_word_id) DO NOTHING;
-      `,
-          [wordPair.id, wordPair.word_id, wordPair.translated_word_id]
-        )
+      `
       )
     );
 
@@ -243,11 +226,11 @@ async function seedWordPairs(client: Client) {
   }
 }
 
-async function seedLocalization(client: Client) {
+async function seedLocalization() {
   try {
-    await client.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`);
+    await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
 
-    const createTable = await client.query(`
+    const createTable = await sql`
     CREATE TABLE IF NOT EXISTS localization (
         id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
         language_code VARCHAR(10) NOT NULL,
@@ -259,19 +242,18 @@ async function seedLocalization(client: Client) {
       ON DELETE CASCADE,
       UNIQUE (language_code, key)
   );
-`);
+`;
+
     console.log(`Created "localization" table`);
 
     const insertedLocalization = await Promise.all(
-      localization.map((loc: LocalizationProps) =>
-        client.query(
-          `
+      localization.map(
+        (loc: LocalizationProps) =>
+          sql`
         INSERT INTO localization (language_code, key, text)
-        VALUES ($1::text, $2::text, $3::text)
-        ON CONFLICT (language_code, key) DO UPDATE SET text = $4::text;
-      `,
-          [loc.language_code, loc.key, loc.text, loc.text]
-        )
+        VALUES ('${loc.language_code}'::text, '${loc.key}'::text, '${loc.text}'::text)
+        ON CONFLICT (language_code, key) DO UPDATE SET text = '${loc.text}'::text;
+      `
       )
     );
 
@@ -287,34 +269,17 @@ async function seedLocalization(client: Client) {
   }
 }
 
-async function setupDatabase(client: Client) {
-  try {
-    const DB_NAME = process.env.DB_NAME || "db-name";
-
-    const createDB = await client.query(
-      `SELECT 'CREATE DATABASE ${DB_NAME}' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = '${DB_NAME}')`
-    );
-
-    return { createDB };
-  } catch (error) {
-    console.error("Error creating db:", error);
-    throw error;
-  }
-}
-
 async function seedCategoryWordPairs({
-  client,
   lang_from,
   lang_to,
   category_id,
 }: {
-  client: Client;
   lang_from: string;
   lang_to: string;
   category_id: string;
 }) {
   try {
-    await client.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`);
+    await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
 
     const insertedWordPairs = await Promise.all(
       wordPairs_en_fi_basic.map(
@@ -330,40 +295,26 @@ async function seedCategoryWordPairs({
             description: string;
           };
         }) =>
-          client.query(
-            `
+          sql`
             WITH new_word AS (
               INSERT INTO words (category_id, language_code, translated_name, description)
-                    VALUES ($1::uuid, $2::text,  $3::text,  $4::text)
-                    ON CONFLICT (category_id, language_code, translated_name) DO UPDATE SET description = $5::text
+                    VALUES ('${category_id}'::uuid, '${lang_from}'::text,  '${wordPair.word.translated_name}'::text,  '${wordPair.word.description}'::text)
+                    ON CONFLICT (category_id, language_code, translated_name) DO UPDATE SET description = '${wordPair.word.description}'::text
               returning id
             ), new_translated_word AS (
               INSERT INTO words (category_id, language_code, translated_name, description)
-                    VALUES ($6::uuid, $7::text,  $8::text,  $9::text)
-                    ON CONFLICT (category_id, language_code, translated_name) DO UPDATE SET description = $10::text
+                    VALUES ('${category_id}'::uuid, '${lang_to}'::text,  '${wordPair.translated_word.translated_name}'::text,  '${wordPair.translated_word.description}'::text)
+                    ON CONFLICT (category_id, language_code, translated_name) DO UPDATE SET description = '${wordPair.translated_word.description}'::text
               returning id
             )
             INSERT INTO WordPairs (word_id, translated_word_id)     
             SELECT * FROM new_word, new_translated_word
             ON CONFLICT (word_id, translated_word_id) DO NOTHING;   
-      `,
-            [
-              category_id,
-              lang_from,
-              wordPair.word.translated_name,
-              wordPair.word.description,
-              wordPair.word.description,
-              category_id,
-              lang_to,
-              wordPair.translated_word.translated_name,
-              wordPair.translated_word.description,
-              wordPair.translated_word.description,
-            ]
-          )
+      `
       )
     );
 
-    console.log(`Seeded ${insertedWordPairs.length} seedCategoryWordPairs`);
+    console.log(`Seeded ${insertedWordPairs.length} WordPairs`);
 
     return {
       insertedWordPairs,
@@ -374,44 +325,20 @@ async function seedCategoryWordPairs({
   }
 }
 
-async function connectToDb() {
-  const DB_USER = process.env.DB_USER || "postgres";
-  const DB_HOST = process.env.DB_HOST || "localhost";
-  const DB_PASSWORD = process.env.DB_PASSWORD || "root";
-  const DB_NAME = process.env.DB_NAME || DB_USER;
-
-  const client = new pg.Client({
-    host: DB_HOST,
-    user: DB_USER,
-    password: DB_PASSWORD,
-    database: DB_NAME,
-    port: 5432,
-  });
-
-  await client.connect();
-
-  return client;
-}
-
 async function main() {
-  const client = await connectToDb();
-  await setupDatabase(client);
-  await seedLanguages(client);
-  await seedCategories(client);
-  await seedCategoryTranslations(client);
-  await seedWords(client);
-  await seedWordPairs(client);
-  await seedLocalization(client);
+  await seedLanguages();
+  await seedCategories();
+  await seedCategoryTranslations();
+  await seedWords();
+  await seedWordPairs();
+  await seedLocalization();
 
   /** category: id: "5a7f36b6-7c4e-4cf6-930b-bf7f4d7b6347", name: "Basic Phrases"*/
   await seedCategoryWordPairs({
-    client: client,
     lang_from: "en",
     lang_to: "fi",
     category_id: "5a7f36b6-7c4e-4cf6-930b-bf7f4d7b6347",
   });
-
-  await client.end();
 }
 
 main().catch((err) => {

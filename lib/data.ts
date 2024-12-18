@@ -11,9 +11,9 @@ import {
   LanguageCodeProps,
   WordPairsQueryProp,
   WordPairsProp,
-} from "@/app/lib/definitions";
+} from "@/lib/definitions";
 
-import { unstable_cache } from "next/cache";
+import { unstable_cache, unstable_noStore as noStore } from "next/cache";
 
 async function connectToDb() {
   const DB_USER = process.env.DB_USER || "postgres";
@@ -83,7 +83,7 @@ export const getCachedCardSets = unstable_cache(
   ["word-pairs"],
   {
     tags: ["word-pairs"],
-    // revalidate: 60,
+    revalidate: 60,
   }
 );
 

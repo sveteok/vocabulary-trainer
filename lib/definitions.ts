@@ -10,7 +10,7 @@ export interface CategoryProps {
 }
 
 export interface CategoryTranslationProps {
-  id: string;
+  id?: string | number;
   category_id: string;
   language_code: string;
   translated_name: string;
