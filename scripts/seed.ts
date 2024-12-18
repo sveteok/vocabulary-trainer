@@ -12,11 +12,9 @@ import {
 
 import {
   LanguagesProps,
-  CategoryProps,
   CategoryTranslationProps,
   WordProps,
   WordPairsProps,
-  LanguageCodeProps,
   LocalizationProps,
 } from "@/lib/definitions";
 
