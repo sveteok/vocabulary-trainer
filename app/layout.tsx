@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { notFound } from "next/navigation";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -14,11 +15,7 @@ const geistMono = Geist_Mono({
 
 import SiteNavigation from "@/ui/basis/siteNavigation";
 
-import {
-  fetchAllCategories,
-  fetchAllLanguages,
-  fetchLocalization,
-} from "@/lib/data";
+import { getInitData } from "@/lib/data";
 
 import DictionaryContextProvider from "@/store/dict-context";
 
@@ -30,20 +27,19 @@ export const metadata: Metadata = {
   description: "Vocabulary trainer",
 };
 
+export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
+
 export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const languageData = await fetchAllLanguages();
-  const localizationData = await fetchLocalization();
-  const categoryData = await fetchAllCategories();
+  const { languages, localization, categories } = await getInitData();
 
-  const [languages, localization, categories] = await Promise.all([
-    languageData,
-    localizationData,
-    categoryData,
-  ]);
+  if (!languages || !localization || !categories) {
+    return notFound();
+  }
 
   return (
     <html lang="en">

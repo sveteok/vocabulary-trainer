@@ -34,7 +34,7 @@ export interface LocalizationProps {
   [key: string]: string | undefined;
 }
 
-export interface LanguageCodeProps {
+export interface AllLocalizationCodeProps {
   [language_code: string]: LocalizationProps | undefined;
 }
 

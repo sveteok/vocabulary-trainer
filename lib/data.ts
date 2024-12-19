@@ -8,7 +8,7 @@ import "@/envConfig";
 import {
   LanguagesProps,
   CategoryProps,
-  LanguageCodeProps,
+  AllLocalizationCodeProps,
   WordPairsQueryProp,
   WordPairsProp,
 } from "@/lib/definitions";
@@ -32,7 +32,7 @@ async function connectToDb() {
   return client;
 }
 
-export async function fetchLocalization(): Promise<LanguageCodeProps> {
+export async function fetchLocalization(): Promise<AllLocalizationCodeProps> {
   const client = await connectToDb();
 
   try {
@@ -47,7 +47,7 @@ export async function fetchLocalization(): Promise<LanguageCodeProps> {
     );
 
     const localization_rows = languages.rows[0].json_object_agg;
-    let languageList: LanguageCodeProps = {};
+    let languageList: AllLocalizationCodeProps = {};
     Object.keys(localization_rows).map(function (language_code) {
       const lang_keys = localization_rows[language_code].json_object_agg;
 
@@ -104,6 +104,39 @@ export async function fetchAllLanguages(): Promise<LanguagesProps[]> {
     await client.end();
   }
 }
+
+interface GetInitDataProps {
+  languages: LanguagesProps[];
+  localization: AllLocalizationCodeProps;
+  categories: CategoryProps[];
+}
+
+export async function featchInitData(): Promise<GetInitDataProps> {
+  const languageData = await fetchAllLanguages();
+  const localizationData = await fetchLocalization();
+  const categoryData = await fetchAllCategories();
+
+  const [languages, localization, categories] = await Promise.all([
+    languageData,
+    localizationData,
+    categoryData,
+  ]);
+
+  return {
+    languages,
+    localization,
+    categories,
+  };
+}
+
+export const getInitData = unstable_cache(
+  async () => featchInitData(),
+  ["init-data"],
+  {
+    tags: ["init-data"],
+    revalidate: 60,
+  }
+);
 
 export async function fetchAllCategories(
   language_code?: string

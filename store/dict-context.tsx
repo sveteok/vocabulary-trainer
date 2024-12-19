@@ -8,7 +8,7 @@ import {
   CategoryProps,
   WordPairsProp,
   LocalizationProps,
-  LanguageCodeProps,
+  AllLocalizationCodeProps,
 } from "@/lib/definitions";
 
 interface FormType {
@@ -17,7 +17,7 @@ interface FormType {
   categories: CategoryProps[];
   localizedCategories?: CategoryProps[];
   localization: LocalizationProps;
-  allLocalization: LanguageCodeProps;
+  allLocalization: AllLocalizationCodeProps;
   language?: string;
   translation_language?: string;
   category?: string;
@@ -192,7 +192,7 @@ const initDictData = ({
 }: {
   languages: LanguagesProps[];
   categories: CategoryProps[];
-  allLocalization: LanguageCodeProps;
+  allLocalization: AllLocalizationCodeProps;
 }): FormType => {
   const lang = languages[0].id;
   return {
@@ -214,7 +214,7 @@ export default function DictionaryContextProvider({
   children: React.ReactNode;
   languages: LanguagesProps[];
   categories: CategoryProps[];
-  localization: LanguageCodeProps;
+  localization: AllLocalizationCodeProps;
 }) {
   const [form, formDispatch] = useReducer(
     formReducer,

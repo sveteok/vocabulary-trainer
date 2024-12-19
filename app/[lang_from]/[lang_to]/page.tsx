@@ -15,7 +15,7 @@ export default async function CategoryListPage({
   const { lang_from, lang_to } = await params;
 
   if (!lang_from || !lang_to) {
-    return "Failed to fetch data!!!.";
+    return <>Failed to fetch data!!!</>;
   }
 
   const localizedCategories = await fetchAllCategories(lang_from);
