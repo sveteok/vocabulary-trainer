@@ -8,7 +8,7 @@ import {
   wordPairs,
   localization,
   wordPairs_en_fi_basic,
-} from "@/lib/placeholder-data";
+} from "../lib/placeholder-data";
 
 import {
   LanguagesProps,
@@ -20,12 +20,8 @@ import {
 
 async function seedLanguages() {
   try {
-    const createTable = await sql`
-        CREATE TABLE IF NOT EXISTS languages (
-          code VARCHAR(10) PRIMARY KEY,
-          name VARCHAR(100) NOT NULL,
-        );
-      `;
+    const createTable =
+      await sql`CREATE TABLE IF NOT EXISTS languages (id VARCHAR(10) PRIMARY KEY, name VARCHAR(100) NOT NULL);`;
 
     console.log(`Created "languages" table`);
 
@@ -33,7 +29,7 @@ async function seedLanguages() {
       languages.map(
         (language: LanguagesProps) =>
           sql`
-          INSERT INTO languages (id, name) VALUES ('${language.id}'::text, '${language.name}'::text,') ON CONFLICT (id) DO NOTHING
+          INSERT INTO languages (id, name) VALUES (${language.id}, ${language.name}) ON CONFLICT (id) DO NOTHING;
          `
       )
     );
@@ -54,19 +50,17 @@ async function seedCategories() {
   try {
     await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
 
-    const createTable = await sql`
-    CREATE TABLE IF NOT EXISTS categories (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(), 
-    name VARCHAR(100) NOT NULL
-    );
-  );
-`;
+    const createTable =
+      await sql`CREATE TABLE IF NOT EXISTS categories (id UUID PRIMARY KEY DEFAULT uuid_generate_v4(), name VARCHAR(100) NOT NULL);`;
+
     console.log(`Created "categories" table`);
 
     const insertedCategories = await Promise.all(
       categories.map(
         (category: { id: string; name: string }) => sql`
-           INSERT INTO categories (id, name) VALUES ('${category.id}'::uuid, '${category.name}'::text,') ON CONFLICT (id) DO NOTHING
+           INSERT INTO categories (id, name) 
+           VALUES (${category.id}, ${category.name}) 
+           ON CONFLICT (id) DO NOTHING;
            `
       )
     );
@@ -102,8 +96,8 @@ async function seedCategoryTranslations() {
           REFERENCES languages(id)
           ON DELETE CASCADE,
         UNIQUE (category_id, language_code)
-  );
-`;
+      );
+    `;
 
     console.log(`Created "categories" table`);
 
@@ -112,8 +106,8 @@ async function seedCategoryTranslations() {
         (categoryTranslation: CategoryTranslationProps) =>
           sql`
         INSERT INTO categoryTranslations (category_id, language_code, translated_name)
-        VALUES ('${categoryTranslation.category_id}'::uuid, '${categoryTranslation.language_code}'::text,  '${categoryTranslation.translated_name}'::text)
-        ON CONFLICT (category_id, language_code) DO UPDATE SET translated_name = '${categoryTranslation.translated_name}'::text;
+        VALUES (${categoryTranslation.category_id}, ${categoryTranslation.language_code}, ${categoryTranslation.translated_name})
+        ON CONFLICT (category_id, language_code) DO UPDATE SET translated_name = ${categoryTranslation.translated_name};
       `
       )
     );
@@ -162,8 +156,8 @@ async function seedWords() {
         (word: WordProps) =>
           sql`
         INSERT INTO words (id, category_id, language_code, translated_name, description)
-        VALUES ('${word.id}'::uuid, '${word.category_id}'::uuid, '${word.language_code}'::text,  '${word.translated_name}'::text,  '${word.description}'::text)
-        ON CONFLICT (category_id, language_code, translated_name) DO UPDATE SET description = '${word.description}'::text;
+        VALUES (${word.id}, ${word.category_id}, ${word.language_code},  ${word.translated_name},  ${word.description})
+        ON CONFLICT (category_id, language_code, translated_name) DO UPDATE SET description = ${word.description};
       `
       )
     );
@@ -184,21 +178,21 @@ async function seedWordPairs() {
     await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
 
     const createTable = await sql`
-    CREATE TABLE IF NOT EXISTS WordPairs (
-    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-    word_id UUID NOT NULL,
-    translated_word_id UUID NOT NULL,
-    CONSTRAINT fk_word_id
-      FOREIGN KEY(word_id)
-      REFERENCES words(id)
-      ON DELETE CASCADE,
-    CONSTRAINT fk_translated_word_id
-      FOREIGN KEY(translated_word_id)
-      REFERENCES words(id)
-      ON DELETE CASCADE,
-    UNIQUE (word_id, translated_word_id)
-  );
-`;
+        CREATE TABLE IF NOT EXISTS WordPairs (
+        id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+        word_id UUID NOT NULL,
+        translated_word_id UUID NOT NULL,
+        CONSTRAINT fk_word_id
+          FOREIGN KEY(word_id)
+          REFERENCES words(id)
+          ON DELETE CASCADE,
+        CONSTRAINT fk_translated_word_id
+          FOREIGN KEY(translated_word_id)
+          REFERENCES words(id)
+          ON DELETE CASCADE,
+        UNIQUE (word_id, translated_word_id)
+      );
+    `;
     console.log(`Created "WordPairs" table`);
 
     const insertedWordPairs = await Promise.all(
@@ -206,7 +200,7 @@ async function seedWordPairs() {
         (wordPair: WordPairsProps) =>
           sql`
         INSERT INTO WordPairs (id, word_id, translated_word_id)
-        VALUES ('${wordPair.id}'::uuid, '${wordPair.word_id}'::uuid, '${wordPair.translated_word_id}'::uuid)
+        VALUES (${wordPair.id}, ${wordPair.word_id}, ${wordPair.translated_word_id})
         ON CONFLICT (word_id, translated_word_id) DO NOTHING;
       `
       )
@@ -229,31 +223,34 @@ async function seedLocalization() {
     await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
 
     const createTable = await sql`
-    CREATE TABLE IF NOT EXISTS localization (
-        id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-        language_code VARCHAR(10) NOT NULL,
-        key VARCHAR(255) NOT NULL,
-        text TEXT NOT NULL,
-    CONSTRAINT fk_language_code
-      FOREIGN KEY(language_code)
-      REFERENCES languages(id)
-      ON DELETE CASCADE,
-      UNIQUE (language_code, key)
-  );
-`;
+        CREATE TABLE IF NOT EXISTS localization (
+            id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+            language_code VARCHAR(10) NOT NULL,
+            key VARCHAR(255) NOT NULL,
+            text TEXT NOT NULL,
+        CONSTRAINT fk_language_code
+          FOREIGN KEY(language_code)
+          REFERENCES languages(id)
+          ON DELETE CASCADE,
+          UNIQUE (language_code, key)
+      );
+    `;
 
     console.log(`Created "localization" table`);
 
+    const client = await sql.connect();
+
     const insertedLocalization = await Promise.all(
       localization.map(
-        (loc: LocalizationProps) =>
-          sql`
+        async (loc: LocalizationProps) =>
+          await client.sql`
         INSERT INTO localization (language_code, key, text)
-        VALUES ('${loc.language_code}'::text, '${loc.key}'::text, '${loc.text}'::text)
-        ON CONFLICT (language_code, key) DO UPDATE SET text = '${loc.text}'::text;
+        VALUES (${loc.language_code}, ${loc.key}, ${loc.text})
+        ON CONFLICT (language_code, key) DO NOTHING
       `
       )
     );
+    client.release();
 
     console.log(`Seeded ${insertedLocalization.length} localization`);
 
@@ -296,18 +293,18 @@ async function seedCategoryWordPairs({
           sql`
             WITH new_word AS (
               INSERT INTO words (category_id, language_code, translated_name, description)
-                    VALUES ('${category_id}'::uuid, '${lang_from}'::text,  '${wordPair.word.translated_name}'::text,  '${wordPair.word.description}'::text)
-                    ON CONFLICT (category_id, language_code, translated_name) DO UPDATE SET description = '${wordPair.word.description}'::text
+                    VALUES (${category_id}, ${lang_from},  ${wordPair.word.translated_name},  ${wordPair.word.description})
+                    ON CONFLICT (category_id, language_code, translated_name) DO UPDATE SET description = ${wordPair.word.description}
               returning id
             ), new_translated_word AS (
               INSERT INTO words (category_id, language_code, translated_name, description)
-                    VALUES ('${category_id}'::uuid, '${lang_to}'::text,  '${wordPair.translated_word.translated_name}'::text,  '${wordPair.translated_word.description}'::text)
-                    ON CONFLICT (category_id, language_code, translated_name) DO UPDATE SET description = '${wordPair.translated_word.description}'::text
+                    VALUES (${category_id}, ${lang_to},  ${wordPair.translated_word.translated_name},  ${wordPair.translated_word.description})
+                    ON CONFLICT (category_id, language_code, translated_name) DO UPDATE SET description = ${wordPair.translated_word.description}
               returning id
             )
             INSERT INTO WordPairs (word_id, translated_word_id)     
             SELECT * FROM new_word, new_translated_word
-            ON CONFLICT (word_id, translated_word_id) DO NOTHING;   
+            ON CONFLICT (word_id, translated_word_id) DO NOTHING;    
       `
       )
     );

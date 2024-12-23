@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "name": "vocabulary_trainer",
   "version": "0.1.0",
   "private": true,
@@ -6,7 +7,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "seed": "node -r dotenv/config --loader  ts-node/esm ./scripts/seed.ts"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
