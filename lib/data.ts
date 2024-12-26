@@ -1,3 +1,5 @@
+"use server";
+
 import { sql } from "@vercel/postgres";
 
 import {
@@ -137,8 +139,9 @@ export async function getWordPairs(
   // noStore();
 
   try {
-    let wordPairs =
-      await sql<WordPairsProp>`SELECT wp.id, wp.word_id, wp.translated_word_id, 
+    if (queryProp.language == "en") {
+      const wordPairs = await sql<WordPairsProp>`
+        SELECT wp.id, wp.word_id, wp.translated_word_id, 
         w.translated_name AS word_name,
         tw.translated_name  AS translated_word_name,
         w.description AS word_desc,
@@ -152,31 +155,57 @@ export async function getWordPairs(
         tw.category_id=${queryProp.category_id} AND 
         tw.language_code=${queryProp.translation_language}
         ;`;
-
-    // if (language_code || language_code !== "en") {
-    //   const delay = (ms: number) =>
-    //     new Promise((resolve) => setTimeout(resolve, ms));
-    //   await delay(3000); /// waiting 1 second.
-    // }
-
-    if (wordPairs.rows.length === 0) {
-      wordPairs =
-        await sql<WordPairsProp>` SELECT wp.id, wp.word_id AS translated_word_id, wp.translated_word_id AS word_id, 
-        w.translated_name AS translated_word_name,
+      return wordPairs.rows;
+    } else if (queryProp.translation_language == "en") {
+      const wordPairs = await sql<WordPairsProp>` 
+          SELECT wp.id, wp.word_id AS translated_word_id, wp.translated_word_id AS word_id, 
+          w.translated_name AS translated_word_name,
+          tw.translated_name  AS word_name,
+          w.description AS translated_word_desc,
+          tw.description  AS word_desc
+          FROM wordPairs AS wp
+          INNER JOIN words AS w ON w.id=wp.word_id
+          INNER JOIN words AS tw ON tw.id=wp.translated_word_id 
+          WHERE 
+          w.category_id=${queryProp.category_id} AND 
+          w.language_code=${queryProp.translation_language} AND
+          tw.category_id=${queryProp.category_id} AND 
+          tw.language_code=${queryProp.language}`;
+      return wordPairs.rows;
+    } else {
+      const wordPairs = await sql<WordPairsProp>`
+        WITH word AS (
+     SELECT w.id AS id, wp.translated_word_id  AS word_id,  
         tw.translated_name  AS word_name,
-        w.description AS translated_word_desc,
         tw.description  AS word_desc
         FROM wordPairs AS wp
         INNER JOIN words AS w ON w.id=wp.word_id
         INNER JOIN words AS tw ON tw.id=wp.translated_word_id 
         WHERE 
         w.category_id=${queryProp.category_id} AND 
-        w.language_code=${queryProp.translation_language} AND
+        w.language_code=${queryProp.language} AND
         tw.category_id=${queryProp.category_id} AND 
-        tw.language_code=${queryProp.language}`;
+        tw.language_code=$3::text
+            ), 
+translated_word AS (
+              SELECT w.id AS id, wp.translated_word_id AS translated_word_id, 
+        tw.translated_name  AS translated_word_name,   
+        tw.description  AS translated_word_desc
+        FROM wordPairs AS wp
+        INNER JOIN words AS w ON w.id=wp.word_id
+        INNER JOIN words AS tw ON tw.id=wp.translated_word_id 
+        WHERE 
+        w.category_id=${queryProp.category_id} AND 
+        w.language_code='en'::text AND
+        tw.category_id=${queryProp.category_id} AND 
+        tw.language_code=${queryProp.translation_language}
+            )
+SELECT *
+        FROM word as w, translated_word as tw WHERE w.id = tw.id
+        ;
+        `;
+      return wordPairs.rows;
     }
-
-    return wordPairs.rows;
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch wordPairs.");
