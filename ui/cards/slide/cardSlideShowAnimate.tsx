@@ -16,16 +16,18 @@ const CardSlideShowAnimate = ({
   isPrevButtonDragDisabled: boolean;
 }) => {
   return (
-    <div className="flex size-full px-8 place-items-center">
-      <AnimatePresence initial={false} custom={direction}>
+    <div className="flex size-full px-0 place-items-center">
+      <AnimatePresence initial={false} custom={direction} mode="wait">
         <motion.div
+          layoutRoot
+          layout="preserve-aspect"
           key={page}
           custom={direction}
           variants={{
             enter: (direction: number) => {
               return {
-                x: direction < 0 ? 1000 : -1000,
-                opacity: [0.5, 1],
+                x: direction > 0 ? 1000 : -1000,
+                opacity: 1,
               };
             },
             center: {
@@ -36,8 +38,8 @@ const CardSlideShowAnimate = ({
             exit: (direction: number) => {
               return {
                 zIndex: 0,
-                x: direction > 0 ? 1000 : -1000,
-                opacity: 0,
+                x: direction < 0 ? 1000 : -1000,
+                opacity: 1,
               };
             },
           }}
@@ -45,14 +47,9 @@ const CardSlideShowAnimate = ({
           animate="center"
           exit="exit"
           transition={{
-            left: {
-              type: "spring",
-              stiffness: 210,
-              damping: 10,
-              mass: 2,
-              duration: cubicBezier(0.29, 1.01, 1, -0.68),
-            },
-            opacity: { duration: 0.9 },
+            default: { ease: "linear" },
+            layout: { duration: 0.4 },
+            opacity: { duration: 0.8 },
           }}
           drag="x"
           dragConstraints={{ left: 0, right: 0 }}

@@ -56,13 +56,13 @@ export const CardSlideShow = () => {
         className=""
       >
         <section aria-label="cards" className="flex flex-1 size-full ">
-          <div className="flex size-full place-items-center ">
+          <div className="flex size-full place-items-center overflow-hidden py-1">
             <button
               key="back"
               value="back"
               onClick={() => paginateHandler(-1)}
               disabled={isPrevButtonDisabled}
-              className={navBtnClassName}
+              className={`${navBtnClassName} left-5`}
             >
               <ArrowBackIosNewRoundedIcon />
             </button>
@@ -80,7 +80,7 @@ export const CardSlideShow = () => {
               value="next"
               onClick={() => paginateHandler(1)}
               disabled={isNextButtonDisabled}
-              className={`${navBtnClassName} content-end`}
+              className={`${navBtnClassName} right-5`}
             >
               <ArrowForwardIosRoundedIcon />
             </button>
@@ -91,8 +91,10 @@ export const CardSlideShow = () => {
   );
 };
 
-const navBtnClassName = `p-2  gap-2
-       border-2 border-[#32302f] rounded-full 
+const navBtnClassName = `
+      absolute md:static z-10
+      p-2  
+      border-2 border-[#32302f] rounded-full 
       bg-[#87837e] text-[#fff]
       hover:border-[#414f4d]
       hover:text-[#414f4d]
