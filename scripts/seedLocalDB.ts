@@ -1,4 +1,5 @@
 "use server";
+// import "@/envConfig";
 
 import { Client } from "pg";
 import pg from "pg";
@@ -11,9 +12,113 @@ import {
   wordPairs,
   localization,
   wordPairs_en_fi_basic,
+  wordPairs_en_fi_emotions,
+  wordPairs_en_fi_food_drink,
+  wordPairs_en_fi_greetings,
+  wordPairs_en_fi_travel,
+  wordPairs_en_fi_numbers,
+  wordPairs_en_fi_time_dates,
+  wordPairs_en_fi_shopping,
+  wordPairs_en_fi_transportation,
+  wordPairs_en_de_transportation,
+  wordPairs_en_fr_transportation,
+  wordPairs_en_pt_transportation,
+  wordPairs_en_ru_transportation,
+  wordPairs_en_zh_transportation,
+  wordPairs_en_ko_transportation,
+  wordPairs_en_ja_transportation,
+  wordPairs_en_ar_transportation,
+  wordPairs_en_hi_transportation,
+  wordPairs_en_hi_basic,
+  wordPairs_en_es_basic,
+  wordPairs_en_fr_basic,
+  wordPairs_en_de_basic,
+  wordPairs_en_ru_basic,
+  wordPairs_en_zh_basic,
+  wordPairs_en_ja_basic,
+  wordPairs_en_ko_basic,
+  wordPairs_en_ar_basic,
+  wordPairs_en_pt_basic,
+  wordPairs_en_es_weather,
+  wordPairs_en_fr_weather,
+  wordPairs_en_de_weather,
+  wordPairs_en_zh_weather,
+  wordPairs_en_ja_weather,
+  wordPairs_en_ru_weather,
+  wordPairs_en_ko_weather,
+  wordPairs_en_ar_weather,
+  wordPairs_en_pt_weather,
+  wordPairs_en_hi_weather,
+  wordPairs_en_hi_emotions,
+  wordPairs_en_ru_emotions,
+  wordPairs_en_es_emotions,
+  wordPairs_en_fr_emotions,
+  wordPairs_en_de_emotions,
+  wordPairs_en_zh_emotions,
+  wordPairs_en_ja_emotions,
+  wordPairs_en_ko_emotions,
+  wordPairs_en_ar_emotions,
+  wordPairs_en_pt_emotions,
+  wordPairs_en_pt_food_drink,
+  wordPairs_en_hi_food_drink,
+  wordPairs_en_es_food_drink,
+  wordPairs_en_ru_food_drink,
+  wordPairs_en_fr_food_drink,
+  wordPairs_en_de_food_drink,
+  wordPairs_en_zh_food_drink,
+  wordPairs_en_ja_food_drink,
+  wordPairs_en_ko_food_drink,
+  wordPairs_en_ar_food_drink,
+  wordPairs_en_ar_greetings,
+  wordPairs_en_pt_greetings,
+  wordPairs_en_hi_greetings,
+  wordPairs_en_ru_greetings,
+  wordPairs_en_es_greetings,
+  wordPairs_en_fr_greetings,
+  wordPairs_en_de_greetings,
+  wordPairs_en_zh_greetings,
+  wordPairs_en_ja_greetings,
+  wordPairs_en_ko_greetings,
+  wordPairs_en_ko_travel,
+  wordPairs_en_ar_travel,
+  wordPairs_en_pt_travel,
+  wordPairs_en_hi_travel,
+  wordPairs_en_ru_travel,
+  wordPairs_en_es_travel,
+  wordPairs_en_fr_travel,
+  wordPairs_en_de_travel,
+  wordPairs_en_zh_travel,
+  wordPairs_en_ja_travel,
+  wordPairs_en_ja_numbers,
+  wordPairs_en_zh_numbers,
+  wordPairs_en_de_numbers,
+  wordPairs_en_fr_numbers,
+  wordPairs_en_es_numbers,
+  wordPairs_en_ru_numbers,
+  wordPairs_en_ko_numbers,
+  wordPairs_en_ar_numbers,
+  wordPairs_en_pt_numbers,
+  wordPairs_en_hi_numbers,
+  wordPairs_en_hi_shopping,
+  wordPairs_en_ru_shopping,
+  wordPairs_en_es_shopping,
+  wordPairs_en_fr_shopping,
+  wordPairs_en_de_shopping,
+  wordPairs_en_zh_shopping,
+  wordPairs_en_ko_shopping,
+  wordPairs_en_ar_shopping,
+  wordPairs_en_pt_shopping,
+  wordPairs_en_pt_time_dates,
+  wordPairs_en_hi_time_dates,
+  wordPairs_en_ru_time_dates,
+  wordPairs_en_es_time_dates,
+  wordPairs_en_fr_time_dates,
+  wordPairs_en_de_time_dates,
+  wordPairs_en_zh_time_dates,
+  wordPairs_en_ja_time_dates,
+  wordPairs_en_ko_time_dates,
+  wordPairs_en_ar_time_dates,
 } from "@/lib/placeholder-data";
-
-import "@/envConfig";
 
 import {
   LanguagesProps,
@@ -21,6 +126,7 @@ import {
   WordProps,
   WordPairsProps,
   LocalizationProps,
+  wordPairsType,
 } from "@/lib/definitions";
 
 async function seedLanguages(client: Client) {
@@ -307,31 +413,21 @@ async function seedCategoryWordPairs({
   lang_from,
   lang_to,
   category_id,
+  data,
 }: {
   client: Client;
   lang_from: string;
   lang_to: string;
   category_id: string;
+  data: wordPairsType[];
 }) {
   try {
     await client.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`);
 
     const insertedWordPairs = await Promise.all(
-      wordPairs_en_fi_basic.map(
-        (wordPair: {
-          word: {
-            language_code: string;
-            translated_name: string;
-            description: string;
-          };
-          translated_word: {
-            language_code: string;
-            translated_name: string;
-            description: string;
-          };
-        }) =>
-          client.query(
-            `
+      data.map((wordPair: wordPairsType) =>
+        client.query(
+          `
             WITH new_word AS (
               INSERT INTO words (category_id, language_code, translated_name, description)
                     VALUES ($1::uuid, $2::text,  $3::text,  $4::text)
@@ -347,19 +443,21 @@ async function seedCategoryWordPairs({
             SELECT * FROM new_word, new_translated_word
             ON CONFLICT (word_id, translated_word_id) DO NOTHING;   
       `,
-            [
-              category_id,
-              lang_from,
-              wordPair.word.translated_name,
-              wordPair.word.description,
-              wordPair.word.description,
-              category_id,
-              lang_to,
-              wordPair.translated_word.translated_name,
+          [
+            category_id,
+            lang_from,
+            wordPair.word.translated_name,
+            wordPair.word.example || wordPair.word.description,
+            wordPair.word.example || wordPair.word.description,
+            category_id,
+            lang_to,
+            wordPair.translated_word.translated_name,
+            wordPair.translated_word.example ||
               wordPair.translated_word.description,
+            wordPair.translated_word.example ||
               wordPair.translated_word.description,
-            ]
-          )
+          ]
+        )
       )
     );
 
@@ -395,20 +493,773 @@ async function connectToDb() {
 
 async function main() {
   const client = await connectToDb();
-  await setupDatabase(client);
-  await seedLanguages(client);
-  await seedCategories(client);
-  await seedCategoryTranslations(client);
-  await seedWords(client);
-  await seedWordPairs(client);
-  await seedLocalization(client);
+  // await setupDatabase(client);
+  // await seedLanguages(client);
+  // await seedCategories(client);
+  // await seedCategoryTranslations(client);
+  // await seedWords(client);
+  // await seedWordPairs(client);
+  // await seedLocalization(client);
 
-  /** category: id: "5a7f36b6-7c4e-4cf6-930b-bf7f4d7b6347", name: "Basic Phrases"*/
+  // /** category: id: "5a7f36b6-7c4e-4cf6-930b-bf7f4d7b6347", name: "Basic Phrases"*/
   await seedCategoryWordPairs({
     client: client,
     lang_from: "en",
     lang_to: "fi",
     category_id: "5a7f36b6-7c4e-4cf6-930b-bf7f4d7b6347",
+    data: wordPairs_en_fi_basic,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "hi",
+    category_id: "5a7f36b6-7c4e-4cf6-930b-bf7f4d7b6347",
+    data: wordPairs_en_hi_basic,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "es",
+    category_id: "5a7f36b6-7c4e-4cf6-930b-bf7f4d7b6347",
+    data: wordPairs_en_es_basic,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "fr",
+    category_id: "5a7f36b6-7c4e-4cf6-930b-bf7f4d7b6347",
+    data: wordPairs_en_fr_basic,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "de",
+    category_id: "5a7f36b6-7c4e-4cf6-930b-bf7f4d7b6347",
+    data: wordPairs_en_de_basic,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "ru",
+    category_id: "5a7f36b6-7c4e-4cf6-930b-bf7f4d7b6347",
+    data: wordPairs_en_ru_basic,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "zh",
+    category_id: "5a7f36b6-7c4e-4cf6-930b-bf7f4d7b6347",
+    data: wordPairs_en_zh_basic,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "ja",
+    category_id: "5a7f36b6-7c4e-4cf6-930b-bf7f4d7b6347",
+    data: wordPairs_en_ja_basic,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "ko",
+    category_id: "5a7f36b6-7c4e-4cf6-930b-bf7f4d7b6347",
+    data: wordPairs_en_ko_basic,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "ar",
+    category_id: "5a7f36b6-7c4e-4cf6-930b-bf7f4d7b6347",
+    data: wordPairs_en_ar_basic,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "pt",
+    category_id: "5a7f36b6-7c4e-4cf6-930b-bf7f4d7b6347",
+    data: wordPairs_en_pt_basic,
+  });
+  /** category: id: "3958dc9e-712f-6508-85e9-fec4b6a62345", name: "emotions"*/
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "fi",
+    category_id: "3958dc9e-712f-6508-85e9-fec4b6a62345",
+    data: wordPairs_en_fi_emotions,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "hi",
+    category_id: "3958dc9e-712f-6508-85e9-fec4b6a62345",
+    data: wordPairs_en_hi_emotions,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "ru",
+    category_id: "3958dc9e-712f-6508-85e9-fec4b6a62345",
+    data: wordPairs_en_ru_emotions,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "es",
+    category_id: "3958dc9e-712f-6508-85e9-fec4b6a62345",
+    data: wordPairs_en_es_emotions,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "fr",
+    category_id: "3958dc9e-712f-6508-85e9-fec4b6a62345",
+    data: wordPairs_en_fr_emotions,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "de",
+    category_id: "3958dc9e-712f-6508-85e9-fec4b6a62345",
+    data: wordPairs_en_de_emotions,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "zh",
+    category_id: "3958dc9e-712f-6508-85e9-fec4b6a62345",
+    data: wordPairs_en_zh_emotions,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "ja",
+    category_id: "3958dc9e-712f-6508-85e9-fec4b6a62345",
+    data: wordPairs_en_ja_emotions,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "ko",
+    category_id: "3958dc9e-712f-6508-85e9-fec4b6a62345",
+    data: wordPairs_en_ko_emotions,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "ar",
+    category_id: "3958dc9e-712f-6508-85e9-fec4b6a62345",
+    data: wordPairs_en_ar_emotions,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "pt",
+    category_id: "3958dc9e-712f-6508-85e9-fec4b6a62345",
+    data: wordPairs_en_pt_emotions,
+  });
+  /** category: id: "4e7b76b5-172c-488d-a69d-7f10a8f9b5ec", name: "food&drink"*/
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "fi",
+    category_id: "4e7b76b5-172c-488d-a69d-7f10a8f9b5ec",
+    data: wordPairs_en_fi_food_drink,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "pt",
+    category_id: "4e7b76b5-172c-488d-a69d-7f10a8f9b5ec",
+    data: wordPairs_en_pt_food_drink,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "hi",
+    category_id: "4e7b76b5-172c-488d-a69d-7f10a8f9b5ec",
+    data: wordPairs_en_hi_food_drink,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "es",
+    category_id: "4e7b76b5-172c-488d-a69d-7f10a8f9b5ec",
+    data: wordPairs_en_es_food_drink,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "ru",
+    category_id: "4e7b76b5-172c-488d-a69d-7f10a8f9b5ec",
+    data: wordPairs_en_ru_food_drink,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "fr",
+    category_id: "4e7b76b5-172c-488d-a69d-7f10a8f9b5ec",
+    data: wordPairs_en_fr_food_drink,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "de",
+    category_id: "4e7b76b5-172c-488d-a69d-7f10a8f9b5ec",
+    data: wordPairs_en_de_food_drink,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "zh",
+    category_id: "4e7b76b5-172c-488d-a69d-7f10a8f9b5ec",
+    data: wordPairs_en_zh_food_drink,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "ja",
+    category_id: "4e7b76b5-172c-488d-a69d-7f10a8f9b5ec",
+    data: wordPairs_en_ja_food_drink,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "ko",
+    category_id: "4e7b76b5-172c-488d-a69d-7f10a8f9b5ec",
+    data: wordPairs_en_ko_food_drink,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "ar",
+    category_id: "4e7b76b5-172c-488d-a69d-7f10a8f9b5ec",
+    data: wordPairs_en_ar_food_drink,
+  });
+  /** category: id: "7f9270ba-4a2b-4c89-b2b8-9f5e4f6f07c8", name: "greetings"*/
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "fi",
+    category_id: "7f9270ba-4a2b-4c89-b2b8-9f5e4f6f07c8",
+    data: wordPairs_en_fi_greetings,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "ar",
+    category_id: "7f9270ba-4a2b-4c89-b2b8-9f5e4f6f07c8",
+    data: wordPairs_en_ar_greetings,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "pt",
+    category_id: "7f9270ba-4a2b-4c89-b2b8-9f5e4f6f07c8",
+    data: wordPairs_en_pt_greetings,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "hi",
+    category_id: "7f9270ba-4a2b-4c89-b2b8-9f5e4f6f07c8",
+    data: wordPairs_en_hi_greetings,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "ru",
+    category_id: "7f9270ba-4a2b-4c89-b2b8-9f5e4f6f07c8",
+    data: wordPairs_en_ru_greetings,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "es",
+    category_id: "7f9270ba-4a2b-4c89-b2b8-9f5e4f6f07c8",
+    data: wordPairs_en_es_greetings,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "fr",
+    category_id: "7f9270ba-4a2b-4c89-b2b8-9f5e4f6f07c8",
+    data: wordPairs_en_fr_greetings,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "de",
+    category_id: "7f9270ba-4a2b-4c89-b2b8-9f5e4f6f07c8",
+    data: wordPairs_en_de_greetings,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "zh",
+    category_id: "7f9270ba-4a2b-4c89-b2b8-9f5e4f6f07c8",
+    data: wordPairs_en_zh_greetings,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "ja",
+    category_id: "7f9270ba-4a2b-4c89-b2b8-9f5e4f6f07c8",
+    data: wordPairs_en_ja_greetings,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "ko",
+    category_id: "7f9270ba-4a2b-4c89-b2b8-9f5e4f6f07c8",
+    data: wordPairs_en_ko_greetings,
+  });
+  // /** category: id: "8fd1e6e0-9d89-4829-abe4-4c6fcb2b98ff", name: "numbers"*/
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "fi",
+    category_id: "8fd1e6e0-9d89-4829-abe4-4c6fcb2b98ff",
+    data: wordPairs_en_fi_numbers,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "ja",
+    category_id: "8fd1e6e0-9d89-4829-abe4-4c6fcb2b98ff",
+    data: wordPairs_en_ja_numbers,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "zh",
+    category_id: "8fd1e6e0-9d89-4829-abe4-4c6fcb2b98ff",
+    data: wordPairs_en_zh_numbers,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "de",
+    category_id: "8fd1e6e0-9d89-4829-abe4-4c6fcb2b98ff",
+    data: wordPairs_en_de_numbers,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "fr",
+    category_id: "8fd1e6e0-9d89-4829-abe4-4c6fcb2b98ff",
+    data: wordPairs_en_fr_numbers,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "es",
+    category_id: "8fd1e6e0-9d89-4829-abe4-4c6fcb2b98ff",
+    data: wordPairs_en_es_numbers,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "ru",
+    category_id: "8fd1e6e0-9d89-4829-abe4-4c6fcb2b98ff",
+    data: wordPairs_en_ru_numbers,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "ko",
+    category_id: "8fd1e6e0-9d89-4829-abe4-4c6fcb2b98ff",
+    data: wordPairs_en_ko_numbers,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "ar",
+    category_id: "8fd1e6e0-9d89-4829-abe4-4c6fcb2b98ff",
+    data: wordPairs_en_ar_numbers,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "pt",
+    category_id: "8fd1e6e0-9d89-4829-abe4-4c6fcb2b98ff",
+    data: wordPairs_en_pt_numbers,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "hi",
+    category_id: "8fd1e6e0-9d89-4829-abe4-4c6fcb2b98ff",
+    data: wordPairs_en_hi_numbers,
+  });
+  // /** category: id: "3bb74a6d-3c3c-44ff-87e9-42e5e3bf9822", name: "shopping"*/
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "fi",
+    category_id: "3bb74a6d-3c3c-44ff-87e9-42e5e3bf9822",
+    data: wordPairs_en_fi_shopping,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "hi",
+    category_id: "3bb74a6d-3c3c-44ff-87e9-42e5e3bf9822",
+    data: wordPairs_en_hi_shopping,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "ru",
+    category_id: "3bb74a6d-3c3c-44ff-87e9-42e5e3bf9822",
+    data: wordPairs_en_ru_shopping,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "es",
+    category_id: "3bb74a6d-3c3c-44ff-87e9-42e5e3bf9822",
+    data: wordPairs_en_es_shopping,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "de",
+    category_id: "3bb74a6d-3c3c-44ff-87e9-42e5e3bf9822",
+    data: wordPairs_en_de_shopping,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "zh",
+    category_id: "3bb74a6d-3c3c-44ff-87e9-42e5e3bf9822",
+    data: wordPairs_en_zh_shopping,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "ja",
+    category_id: "3bb74a6d-3c3c-44ff-87e9-42e5e3bf9822",
+    data: wordPairs_en_fi_shopping,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "ko",
+    category_id: "3bb74a6d-3c3c-44ff-87e9-42e5e3bf9822",
+    data: wordPairs_en_ko_shopping,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "ar",
+    category_id: "3bb74a6d-3c3c-44ff-87e9-42e5e3bf9822",
+    data: wordPairs_en_ar_shopping,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "pt",
+    category_id: "3bb74a6d-3c3c-44ff-87e9-42e5e3bf9822",
+    data: wordPairs_en_pt_shopping,
+  });
+  /** category: id: "f9e7a2c9-4e22-4d3f-b7a5-8f9dc7d61f35", name: "time&dates"*/
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "fi",
+    category_id: "f9e7a2c9-4e22-4d3f-b7a5-8f9dc7d61f35",
+    data: wordPairs_en_fi_time_dates,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "pt",
+    category_id: "f9e7a2c9-4e22-4d3f-b7a5-8f9dc7d61f35",
+    data: wordPairs_en_pt_time_dates,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "hi",
+    category_id: "f9e7a2c9-4e22-4d3f-b7a5-8f9dc7d61f35",
+    data: wordPairs_en_hi_time_dates,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "ru",
+    category_id: "f9e7a2c9-4e22-4d3f-b7a5-8f9dc7d61f35",
+    data: wordPairs_en_ru_time_dates,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "es",
+    category_id: "f9e7a2c9-4e22-4d3f-b7a5-8f9dc7d61f35",
+    data: wordPairs_en_es_time_dates,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "fr",
+    category_id: "f9e7a2c9-4e22-4d3f-b7a5-8f9dc7d61f35",
+    data: wordPairs_en_fr_time_dates,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "de",
+    category_id: "f9e7a2c9-4e22-4d3f-b7a5-8f9dc7d61f35",
+    data: wordPairs_en_de_time_dates,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "zh",
+    category_id: "f9e7a2c9-4e22-4d3f-b7a5-8f9dc7d61f35",
+    data: wordPairs_en_zh_time_dates,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "ja",
+    category_id: "f9e7a2c9-4e22-4d3f-b7a5-8f9dc7d61f35",
+    data: wordPairs_en_ja_time_dates,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "ko",
+    category_id: "f9e7a2c9-4e22-4d3f-b7a5-8f9dc7d61f35",
+    data: wordPairs_en_ko_time_dates,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "ar",
+    category_id: "f9e7a2c9-4e22-4d3f-b7a5-8f9dc7d61f35",
+    data: wordPairs_en_ar_time_dates,
+  });
+
+  /** category: id: "2fa3b5c4-2841-4e0b-9468-bfd9395fa8bb", name: "travel"*/
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "fi",
+    category_id: "2fa3b5c4-2841-4e0b-9468-bfd9395fa8bb",
+    data: wordPairs_en_fi_travel,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "ko",
+    category_id: "2fa3b5c4-2841-4e0b-9468-bfd9395fa8bb",
+    data: wordPairs_en_ko_travel,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "ar",
+    category_id: "2fa3b5c4-2841-4e0b-9468-bfd9395fa8bb",
+    data: wordPairs_en_ar_travel,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "pt",
+    category_id: "2fa3b5c4-2841-4e0b-9468-bfd9395fa8bb",
+    data: wordPairs_en_pt_travel,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "hi",
+    category_id: "2fa3b5c4-2841-4e0b-9468-bfd9395fa8bb",
+    data: wordPairs_en_hi_travel,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "hi",
+    category_id: "2fa3b5c4-2841-4e0b-9468-bfd9395fa8bb",
+    data: wordPairs_en_ru_travel,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "es",
+    category_id: "2fa3b5c4-2841-4e0b-9468-bfd9395fa8bb",
+    data: wordPairs_en_es_travel,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "fr",
+    category_id: "2fa3b5c4-2841-4e0b-9468-bfd9395fa8bb",
+    data: wordPairs_en_fr_travel,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "de",
+    category_id: "2fa3b5c4-2841-4e0b-9468-bfd9395fa8bb",
+    data: wordPairs_en_de_travel,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "zh",
+    category_id: "2fa3b5c4-2841-4e0b-9468-bfd9395fa8bb",
+    data: wordPairs_en_zh_travel,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "ja",
+    category_id: "2fa3b5c4-2841-4e0b-9468-bfd9395fa8bb",
+    data: wordPairs_en_ja_travel,
+  });
+  /** category: id: "cb4d1a4e-9459-4f65-8376-5b9f3c8c9b9f", name: "transportation"*/
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "fi",
+    category_id: "cb4d1a4e-9459-4f65-8376-5b9f3c8c9b9f",
+    data: wordPairs_en_fi_transportation,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "de",
+    category_id: "cb4d1a4e-9459-4f65-8376-5b9f3c8c9b9f",
+    data: wordPairs_en_de_transportation,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "fr",
+    category_id: "cb4d1a4e-9459-4f65-8376-5b9f3c8c9b9f",
+    data: wordPairs_en_fr_transportation,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "pt",
+    category_id: "cb4d1a4e-9459-4f65-8376-5b9f3c8c9b9f",
+    data: wordPairs_en_pt_transportation,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "ru",
+    category_id: "cb4d1a4e-9459-4f65-8376-5b9f3c8c9b9f",
+    data: wordPairs_en_ru_transportation,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "zh",
+    category_id: "cb4d1a4e-9459-4f65-8376-5b9f3c8c9b9f",
+    data: wordPairs_en_zh_transportation,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "ko",
+    category_id: "cb4d1a4e-9459-4f65-8376-5b9f3c8c9b9f",
+    data: wordPairs_en_ko_transportation,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "ja",
+    category_id: "cb4d1a4e-9459-4f65-8376-5b9f3c8c9b9f",
+    data: wordPairs_en_ja_transportation,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "ar",
+    category_id: "cb4d1a4e-9459-4f65-8376-5b9f3c8c9b9f",
+    data: wordPairs_en_ar_transportation,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "hi",
+    category_id: "cb4d1a4e-9459-4f65-8376-5b9f3c8c9b9f",
+    data: wordPairs_en_hi_transportation,
+  });
+  /** category: id: "3958dc9e-712f-8808-85e9-fec4b6a6442b", name: "Weather"*/
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "es",
+    category_id: "3958dc9e-712f-8808-85e9-fec4b6a6442b",
+    data: wordPairs_en_es_weather,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "fr",
+    category_id: "3958dc9e-712f-8808-85e9-fec4b6a6442b",
+    data: wordPairs_en_fr_weather,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "de",
+    category_id: "3958dc9e-712f-8808-85e9-fec4b6a6442b",
+    data: wordPairs_en_de_weather,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "zh",
+    category_id: "3958dc9e-712f-8808-85e9-fec4b6a6442b",
+    data: wordPairs_en_zh_weather,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "ja",
+    category_id: "3958dc9e-712f-8808-85e9-fec4b6a6442b",
+    data: wordPairs_en_ja_weather,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "ru",
+    category_id: "3958dc9e-712f-8808-85e9-fec4b6a6442b",
+    data: wordPairs_en_ru_weather,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "ko",
+    category_id: "3958dc9e-712f-8808-85e9-fec4b6a6442b",
+    data: wordPairs_en_ko_weather,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "ar",
+    category_id: "3958dc9e-712f-8808-85e9-fec4b6a6442b",
+    data: wordPairs_en_ar_weather,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "pt",
+    category_id: "3958dc9e-712f-8808-85e9-fec4b6a6442b",
+    data: wordPairs_en_pt_weather,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "hi",
+    category_id: "3958dc9e-712f-8808-85e9-fec4b6a6442b",
+    data: wordPairs_en_hi_weather,
   });
 
   await client.end();

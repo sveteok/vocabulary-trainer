@@ -177,8 +177,10 @@ export async function getWordPairs(
   const client = await connectToDb();
 
   try {
-    const CELECT_WORDD_PAIRS = `
-      SELECT wp.id, wp.word_id, wp.translated_word_id, 
+    if (queryProp.language == "en") {
+      const wordPairs = await client.query(
+        `
+        SELECT wp.id, wp.word_id, wp.translated_word_id, 
         w.translated_name AS word_name,
         tw.translated_name  AS translated_word_name,
         w.description AS word_desc,
@@ -192,10 +194,19 @@ export async function getWordPairs(
         tw.category_id=$3::uuid AND 
         tw.language_code=$4::text
         ;
-      `;
-
-    const CELECT_REVERTED_WORDD_PAIRS = `
-      SELECT wp.id, wp.word_id AS translated_word_id, wp.translated_word_id AS word_id, 
+        `,
+        [
+          queryProp.category_id,
+          queryProp.language,
+          queryProp.category_id,
+          queryProp.translation_language,
+        ]
+      );
+      return wordPairs.rows;
+    } else if (queryProp.translation_language == "en") {
+      const wordPairs = await client.query(
+        `
+        SELECT wp.id, wp.word_id AS translated_word_id, wp.translated_word_id AS word_id, 
         w.translated_name AS translated_word_name,
         tw.translated_name  AS word_name,
         w.description AS translated_word_desc,
@@ -209,31 +220,60 @@ export async function getWordPairs(
         tw.category_id=$3::uuid AND 
         tw.language_code=$4::text
         ;
-      `;
-
-    let wordPairs = await client.query(CELECT_WORDD_PAIRS, [
-      queryProp.category_id,
-      queryProp.language,
-      queryProp.category_id,
-      queryProp.translation_language,
-    ]);
-
-    // if (language_code || language_code !== "en") {
-    //   const delay = (ms: number) =>
-    //     new Promise((resolve) => setTimeout(resolve, ms));
-    //   await delay(3000); /// waiting 1 second.
-    // }
-
-    if (wordPairs.rows.length === 0) {
-      wordPairs = await client.query(CELECT_REVERTED_WORDD_PAIRS, [
-        queryProp.category_id,
-        queryProp.translation_language,
-        queryProp.category_id,
-        queryProp.language,
-      ]);
+        `,
+        [
+          queryProp.category_id,
+          queryProp.translation_language,
+          queryProp.category_id,
+          queryProp.language,
+        ]
+      );
+      return wordPairs.rows;
+    } else {
+      const wordPairs = await client.query(
+        `
+        WITH word AS (
+     SELECT w.id AS id, wp.translated_word_id  AS word_id,  
+        tw.translated_name  AS word_name,
+        tw.description  AS word_desc
+        FROM wordPairs AS wp
+        INNER JOIN words AS w ON w.id=wp.word_id
+        INNER JOIN words AS tw ON tw.id=wp.translated_word_id 
+        WHERE 
+        w.category_id=$1::uuid AND 
+        w.language_code='en'::text AND
+        tw.category_id=$2::uuid AND 
+        tw.language_code=$3::text
+            ), 
+translated_word AS (
+              SELECT w.id AS id, wp.translated_word_id AS translated_word_id, 
+        tw.translated_name  AS translated_word_name,   
+        tw.description  AS translated_word_desc
+        FROM wordPairs AS wp
+        INNER JOIN words AS w ON w.id=wp.word_id
+        INNER JOIN words AS tw ON tw.id=wp.translated_word_id 
+        WHERE 
+        w.category_id=$4::uuid AND 
+        w.language_code='en'::text AND
+        tw.category_id=$5::uuid AND 
+        tw.language_code=$6::text
+            )
+SELECT *
+        FROM word as w, translated_word as tw WHERE w.id = tw.id
+        ;
+        `,
+        [
+          queryProp.category_id,
+          queryProp.category_id,
+          queryProp.language,
+          queryProp.category_id,
+          queryProp.category_id,
+          queryProp.translation_language,
+        ]
+      );
+      // console.log(wordPairs.rows);
+      return wordPairs.rows;
     }
-
-    return wordPairs.rows;
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch wordPairs.");

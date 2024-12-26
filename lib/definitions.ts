@@ -91,3 +91,18 @@ export type wordItem = {
 };
 
 export type wordTable = wordItem[];
+
+export type wordPairsType = {
+  word: {
+    language_code: string;
+    translated_name: string;
+    description: string;
+    example?: string;
+  };
+  translated_word: {
+    language_code: string;
+    translated_name: string;
+    description: string;
+    example?: string;
+  };
+};
