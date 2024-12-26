@@ -33,6 +33,7 @@ export default async function WordsPairWrapper({
   } as WordPairsQueryProp;
 
   const wordPairs = await getCachedCardSets(query);
+  console.log("2!. getCachedCardSets ... ", wordPairs);
   return (
     <WordsContextWrapper wordPairs={wordPairs}>{children}</WordsContextWrapper>
   );

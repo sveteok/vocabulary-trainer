@@ -46,7 +46,7 @@ export default async function RootLayout({
       <head>
         <meta
           name="viewport"
-          content="width=device-width, user-scalable=0"
+          content="width=device-width"
           id="viewportMeta"
         ></meta>
       </head>

@@ -31,6 +31,7 @@ const WordRow = ({
           checked={item.selected === undefined ? false : item.selected}
           value={item.id}
           aria-label="select words to study"
+          {...{ inputProps: { "aria-label": "Checkbox demo" } }}
           disabled={!canSelectMoreWords && !item.selected}
           onChange={(
             e: React.ChangeEvent<HTMLInputElement>,

@@ -18,7 +18,10 @@ export default function SiteNavigation() {
   } = useSiteNavigation();
 
   return (
-    <div className="flex flex-col h-[100px] p-2 gap-2 sbg-[#cddcd5] xbg-[#32302f] bg-[#87837e] xbg-[#d5cddc] text-[#ffffff]  text-sm">
+    <nav
+      role="navigation"
+      className="flex flex-col h-[100px] p-2 gap-2  bg-[#595754]  text-[#ffffff]  text-sm"
+    >
       <div className="flex flex-row gap-3">
         <LanguageContent
           language={language}
@@ -66,7 +69,7 @@ export default function SiteNavigation() {
           {localization.select_application_language || "Select language"}...
         </div>
       )}
-    </div>
+    </nav>
   );
 }
 

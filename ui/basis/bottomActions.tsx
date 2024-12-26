@@ -20,7 +20,7 @@ export default function bottomActions({
   handleOnChange: (newValue: number | string) => void;
 }) {
   return (
-    <div className="flex gap-4  justify-center p-4 relative ">
+    <footer className="flex gap-4  justify-center p-4 relative ">
       {actions.map((action) => (
         <RippleButton
           key={action.id}
@@ -33,6 +33,6 @@ export default function bottomActions({
           <label className="hover:cursor-pointer">{action.label}</label>
         </RippleButton>
       ))}
-    </div>
+    </footer>
   );
 }

@@ -14,11 +14,12 @@ export default function MainContainer({
 }) {
   return (
     <>
-      <div
+      <main
+        role="main"
         className={`flex-1 flex flex-col items-stretch p-4 overflow-y-scroll gap-4 bg-[#dcd5cd] text-[#232a32] ${className}`}
       >
         {children}
-      </div>
+      </main>
       <BottomActions actions={actions} handleOnChange={handleOnChange} />
     </>
   );

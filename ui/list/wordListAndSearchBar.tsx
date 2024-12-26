@@ -34,6 +34,7 @@ const WordListAndSearchBar = ({
           checked={isControlCheckboxChecked}
           value="all"
           aria-label={`Select first ${maxNumToSelect} new words to study`}
+          {...{ inputProps: { "aria-label": "Checkbox demo" } }}
           onChange={(
             e: React.ChangeEvent<HTMLInputElement>,
             checked: boolean
