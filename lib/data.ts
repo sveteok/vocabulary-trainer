@@ -51,15 +51,6 @@ export const getCachedCategories = unstable_cache(
   }
 );
 
-export const getCachedCardSets = unstable_cache(
-  async (query: WordPairsQueryProp) => getWordPairs(query),
-  ["word-pairs"],
-  {
-    tags: ["word-pairs"],
-    revalidate: 60,
-  }
-);
-
 export async function fetchAllLanguages(): Promise<LanguagesProps[]> {
   // noStore();
 
@@ -133,13 +124,20 @@ export async function fetchAllCategories(
   }
 }
 
+export const getCachedCardSets = unstable_cache(
+  async (query: WordPairsQueryProp) => getWordPairs(query),
+  ["word-pairs"],
+  {
+    tags: ["word-pairs"],
+    revalidate: 60,
+  }
+);
+
 export async function getWordPairs(
   queryProp: WordPairsQueryProp
 ): Promise<WordPairsProp[]> {
-  // noStore();
-
   try {
-    if (queryProp.language == "en") {
+    if (queryProp.language === "en") {
       const wordPairs = await sql<WordPairsProp>`
         SELECT wp.id, wp.word_id, wp.translated_word_id, 
         w.translated_name AS word_name,
@@ -156,7 +154,7 @@ export async function getWordPairs(
         tw.language_code=${queryProp.translation_language}
         ;`;
       return wordPairs.rows;
-    } else if (queryProp.translation_language == "en") {
+    } else if (queryProp.translation_language === "en") {
       const wordPairs = await sql<WordPairsProp>` 
           SELECT wp.id, wp.word_id AS translated_word_id, wp.translated_word_id AS word_id, 
           w.translated_name AS translated_word_name,
@@ -175,34 +173,32 @@ export async function getWordPairs(
     } else {
       const wordPairs = await sql<WordPairsProp>`
         WITH word AS (
-     SELECT w.id AS id, wp.translated_word_id  AS word_id,  
-        tw.translated_name  AS word_name,
-        tw.description  AS word_desc
-        FROM wordPairs AS wp
-        INNER JOIN words AS w ON w.id=wp.word_id
-        INNER JOIN words AS tw ON tw.id=wp.translated_word_id 
-        WHERE 
-        w.category_id=${queryProp.category_id} AND 
-        w.language_code=${queryProp.language} AND
-        tw.category_id=${queryProp.category_id} AND 
-        tw.language_code=$3::text
-            ), 
-translated_word AS (
-              SELECT w.id AS id, wp.translated_word_id AS translated_word_id, 
-        tw.translated_name  AS translated_word_name,   
-        tw.description  AS translated_word_desc
-        FROM wordPairs AS wp
-        INNER JOIN words AS w ON w.id=wp.word_id
-        INNER JOIN words AS tw ON tw.id=wp.translated_word_id 
-        WHERE 
-        w.category_id=${queryProp.category_id} AND 
-        w.language_code='en'::text AND
-        tw.category_id=${queryProp.category_id} AND 
-        tw.language_code=${queryProp.translation_language}
-            )
-SELECT *
-        FROM word as w, translated_word as tw WHERE w.id = tw.id
-        ;
+              SELECT w.id AS id, wp.translated_word_id  AS word_id,  
+                tw.translated_name  AS word_name,
+                tw.description  AS word_desc
+                FROM wordPairs AS wp
+                INNER JOIN words AS w ON w.id=wp.word_id
+                INNER JOIN words AS tw ON tw.id=wp.translated_word_id 
+              WHERE 
+                w.category_id=${queryProp.category_id} AND 
+                w.language_code='en'::text AND
+                tw.category_id=${queryProp.category_id} AND 
+                tw.language_code=${queryProp.language}
+                    ), 
+            translated_word AS (
+                SELECT w.id AS id, wp.translated_word_id AS translated_word_id, 
+                  tw.translated_name  AS translated_word_name,   
+                  tw.description  AS translated_word_desc
+                  FROM wordPairs AS wp
+                  INNER JOIN words AS w ON w.id=wp.word_id
+                  INNER JOIN words AS tw ON tw.id=wp.translated_word_id 
+                WHERE 
+                  w.category_id=${queryProp.category_id} AND 
+                  w.language_code='en'::text AND
+                  tw.category_id=${queryProp.category_id} AND 
+                  tw.language_code=${queryProp.translation_language}
+      )
+      SELECT * FROM word as w, translated_word as tw WHERE w.id = tw.id;
         `;
       return wordPairs.rows;
     }
