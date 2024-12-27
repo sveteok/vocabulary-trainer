@@ -125,7 +125,6 @@ const adjustWordSelection = (
       return { ...w, selected: selected };
     });
   } else if (selected) {
-    console.log("There! -1");
     updatedWordPairs = updatedWordPairs.map((w) => {
       let isSelectedWord = w.selected;
 
