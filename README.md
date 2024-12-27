@@ -3,6 +3,7 @@
 ## Description
 
 **Vocabulary Trainer** is a versatile study tool designed to help you learn languages efficiently. Whether you aim to improve your grades or achieve personal language goals, this app offers multiple modes of learning, including flashcards, written tests, memory match games, and quizzes.
+
 The app is built using the latest technologies, including:
 
 - **Next.js** 15.1.0
@@ -19,19 +20,29 @@ The app is built using the latest technologies, including:
 - **Multiple Training Modes:** Choose from flashcards, memory match, quizzes, and writing exercises.
 - **Progress Tracking:** Monitor your learning progress and track completion rates.
 
-This project provides a complete environment setup with instructions and all necessary components for local development and testing.
+This project provides a complete environment setup with instructions and all necessary components for local development and cloud deployment.
 
 ## Getting Started
 
 ### Requirements
 
-To run this project locally, ensure you have:
-
-- **PostgreSQL** installed on your system (local or remote).
+To run this project locally or on Vercel, ensure you have:
+- **PostgreSQL** installed locally or configured on Vercel.
 - Permissions to create users and databases in PostgreSQL.
-- A `.env.local` file with the database connection details.
+- A `.env.local` file for local development and a `.env` file for Vercel deployment with database connection details.
 
-### Installation
+### Installation (Local Development)
+
+#### Prerequisites
+1. Initial Setup Install required PostgreSQL libraries:
+
+   ```bash
+    npm install pg dotenv @types/pg
+    ```
+   
+2. Ensure sensitive files like `.env` are included in your `.gitignore` to prevent secrets from being exposed when pushing to GitHub.
+
+#### Installation
 
 1.  **Clone the Repository**
     Run the following command to clone the project:
@@ -68,19 +79,83 @@ To run this project locally, ensure you have:
 6.  **Access the App**
     Open http://localhost:3000 in your browser to view the application.
 
-## Project Structure
+
+
+### Deployment on Vercel
+
+#### Prerequisites
+1. Install **pnpm** for faster dependency management:
+
+    ```bash
+    npm install -g pnpm
+    ```
+
+2. Install the Vercel Postgres SDK:
+
+   ```bash
+    pnpm i @vercel/postgres
+    ```
+3. Ensure sensitive files like `.env` are included in your `.gitignore` to prevent secrets from being exposed when pushing to GitHub.
+
+#### Set Up Environment Variables
+1. Create a `.env` file for Vercel with the following keys:
+   ```bash
+    POSTGRES_USER=<vercel postgres user>
+    POSTGRES_HOST=<vercel postgres hostname>
+    POSTGRES_PASSWORD=<vercel postgres password>
+    POSTGRES_DATABASE=<vercel postgres database name>
+    ```
+2. Include the `.env` file in your project before deploying to Vercel.
+
+#### Deploy the Project
+1. Install the Vercel CLI:
+
+    ```bash
+    pnpm i -g vercel
+    ```
+
+2. Build and deploy the project:
+
+   ```bash
+    vercel build
+    vercel deploy --prebuilt
+    vercel --prod
+    ```
+   
+#### Seed the Vercel Postgres Database
+1. Add the following script to your `package.json` under `"scripts"`:
+
+   ```json
+    "scripts": {
+        "dev": "next dev --turbopack",
+        "build": "next build",
+        "start": "next start",
+        "lint": "next lint",
+        "seed": "node -r dotenv/config --loader ts-node/esm ./scripts/seed.ts"
+    }
+    ```
+
+2. Run the seeding script:
+
+   ```bash
+    pnpm run seed
+    ```
+
+### Project Structure
 
     vocabulary-trainer/
     ├── .gitignore          # Avoid pushing sensitive files like node_modules or secrets
     ├── README.md           # Project documentation
     ├── .env.local          # Environment variables for local development
+    ├── .env                # Environment variables for Vercel
     ├── envConfig.ts        # Handles environment variables
     ├── next.config.ts      # Next.js configuration
     ├── tsconfig.json       # TypeScript configuration
     ├── package.json        # Project dependencies and scripts
     ├── tailwind.config.ts  # Tailwind CSS configuration
     ├── scripts/
-    │   ├── seedLocalDB.ts  # Database seeding script
+    │   ├── seedLocalDB.ts  # Database seeding script for local development
+    │   ├── seed.ts         # Database seeding script for Vercel Postgres
     ├── app/                # Main application folder with dynamic routing
     │   ├── [lang_from]/[lang_to]/[cat_id]/
     │   │   ├── cards/      # Flashcards training mode
@@ -95,7 +170,8 @@ To run this project locally, ensure you have:
     │   ├── store-provider/ # Store provider
     ├── store/              # Store global states
     ├── lib/                # Utility functions and placeholder data
-    │   ├── data.ts         # Database interaction logic
+    │   ├── data_local_db.ts # Database interaction logic for local development
+    │   ├── data.ts         # Database interaction logic for Vercel
     │   ├── definitions.ts  # Type definitions
     │   ├── placeholder-data.js # Placeholder data for local testing
     │   ├── utils.ts
@@ -112,19 +188,6 @@ The app uses **PostgreSQL** for data management. Below is an overview of the dat
 4. **Words**: Stores individual words and their translations.
 5. **WordPairs**: Links translations of words between languages.
 6. **Localization**: Stores localization of all supported languages.
-
-**Initial Setup**
-Install required PostgreSQL libraries:
-
-```bash
-npm install pg dotenv @types/pg
-```
-
-Seed the database using the provided script:
-
-```bash
-npx tsx scripts/seedLocalDB.ts
-```
 
 ## Key Features
 
@@ -150,11 +213,10 @@ npm install react-card-flip
 
 ## Planned Features
 
-1. **Cloud-Hosted Database**: Use a free PostgreSQL database hosted on Vercel.
-2. **AI-Generated Content Expansion**:
+**AI-Generated Content Expansion**:
    - Use AI to periodically add new word pairs and categories.
    - Schedule content updates every few months to keep the app fresh.
 
 ### Additional Notes
 
-This app demonstrates the power of modern web technologies for educational purposes. Contributions, feedback, and feature suggestions are welcome!
+This app demonstrates the power of modern web technologies for educational purposes. Contributions, feedback, and feature suggestions are welcome! For further assistance with deploying the project on Vercel, refer to the Vercel CLI documentation https://vercel.com/docs/cli or the Next.js database setup guide https://nextjs.org/learn/dashboard-app/setting-up-your-database.
