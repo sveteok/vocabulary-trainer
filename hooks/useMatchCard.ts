@@ -194,6 +194,22 @@ export function useMatchCard({
         let wordIndex = currentCard?.index;
         let translatedWordIndex = currentTranslatedCard?.index;
 
+        if (currentCard === null && currentTranslatedCard === null) {
+          words = words.map((el) => {
+            if (el?.result === CardResultTypes.INCORRECT) {
+              return { ...el, result: CardResultTypes.NO_ANSWER };
+            }
+            return el;
+          });
+
+          translatedWords = translatedWords.map((el) => {
+            if (el?.result === CardResultTypes.INCORRECT) {
+              return { ...el, result: CardResultTypes.NO_ANSWER };
+            }
+            return el;
+          });
+        }
+
         if (card_type === CardTypes.CARD) {
           currentWordId = word_id;
           wordIndex = index;

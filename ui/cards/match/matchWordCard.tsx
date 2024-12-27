@@ -109,7 +109,14 @@ const MatchWordCard = (props: MatchWordProp) => {
       data-cursor={
         result !== CardResultTypes.CORRECT ? "pointer" : "not-allowed"
       }
-      className=" flex justify-center border-2 justify-items-stretch text-center text-[#232a32] place-items-center align-middle p-2 size-full rounded-lg font-semibold md:text-xl data-[cursor='pointer']:cursor-pointer data-[cursor='not-allowed']:cursor-not-allowed "
+      className={`
+        flex justify-center border-2 justify-items-stretch text-center text-[#232a32] place-items-center align-middle p-2 size-full rounded-lg font-semibold md:text-xl data-[cursor='pointer']:cursor-pointer data-[cursor='not-allowed']:cursor-not-allowed 
+        ${
+          animate_mode !== "card_face_selected"
+            ? ""
+            : "bg-radial-gradient-card-back-side bg-[length:3px_3px]"
+        }
+      `}
       onClick={
         result !== CardResultTypes.CORRECT && onClick && word_id && index
           ? () => onClick(word_id, index, cardType || CardTypes.CARD)
