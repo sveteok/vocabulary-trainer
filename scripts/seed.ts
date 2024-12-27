@@ -434,12 +434,12 @@ async function seedCategoryWordPairs({
 }
 
 async function main() {
-  await seedLanguages();
-  await seedCategories();
-  await seedCategoryTranslations();
+  // await seedLanguages();
+  // await seedCategories();
+  // await seedCategoryTranslations();
   await seedWords();
-  await seedWordPairs();
-  await seedLocalization();
+  // await seedWordPairs();
+  // await seedLocalization();
 
   /** category: id: "5a7f36b6-7c4e-4cf6-930b-bf7f4d7b6347", name: "Basic Phrases"*/
   await seedCategoryWordPairs({
@@ -827,12 +827,6 @@ async function main() {
   });
   await seedCategoryWordPairs({
     lang_from: "en",
-    lang_to: "ja",
-    category_id: "3bb74a6d-3c3c-44ff-87e9-42e5e3bf9822",
-    data: wordPairs_en_fi_shopping,
-  });
-  await seedCategoryWordPairs({
-    lang_from: "en",
     lang_to: "ko",
     category_id: "3bb74a6d-3c3c-44ff-87e9-42e5e3bf9822",
     data: wordPairs_en_ko_shopping,
@@ -949,7 +943,7 @@ async function main() {
   });
   await seedCategoryWordPairs({
     lang_from: "en",
-    lang_to: "hi",
+    lang_to: "ru",
     category_id: "2fa3b5c4-2841-4e0b-9468-bfd9395fa8bb",
     data: wordPairs_en_ru_travel,
   });

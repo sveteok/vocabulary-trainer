@@ -100,6 +100,7 @@ import {
   wordPairs_en_pt_numbers,
   wordPairs_en_hi_numbers,
   wordPairs_en_hi_shopping,
+  wordPairs_en_ja_shopping,
   wordPairs_en_ru_shopping,
   wordPairs_en_es_shopping,
   wordPairs_en_fr_shopping,
@@ -497,8 +498,8 @@ async function main() {
   // await seedLanguages(client);
   // await seedCategories(client);
   // await seedCategoryTranslations(client);
-  // await seedWords(client);
-  // await seedWordPairs(client);
+  await seedWords(client);
+  await seedWordPairs(client);
   // await seedLocalization(client);
 
   // /** category: id: "5a7f36b6-7c4e-4cf6-930b-bf7f4d7b6347", name: "Basic Phrases"*/
@@ -902,6 +903,20 @@ async function main() {
   await seedCategoryWordPairs({
     client: client,
     lang_from: "en",
+    lang_to: "ja",
+    category_id: "3bb74a6d-3c3c-44ff-87e9-42e5e3bf9822",
+    data: wordPairs_en_ja_shopping,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
+    lang_to: "fr",
+    category_id: "3bb74a6d-3c3c-44ff-87e9-42e5e3bf9822",
+    data: wordPairs_en_fr_shopping,
+  });
+  await seedCategoryWordPairs({
+    client: client,
+    lang_from: "en",
     lang_to: "hi",
     category_id: "3bb74a6d-3c3c-44ff-87e9-42e5e3bf9822",
     data: wordPairs_en_hi_shopping,
@@ -933,13 +948,6 @@ async function main() {
     lang_to: "zh",
     category_id: "3bb74a6d-3c3c-44ff-87e9-42e5e3bf9822",
     data: wordPairs_en_zh_shopping,
-  });
-  await seedCategoryWordPairs({
-    client: client,
-    lang_from: "en",
-    lang_to: "ja",
-    category_id: "3bb74a6d-3c3c-44ff-87e9-42e5e3bf9822",
-    data: wordPairs_en_fi_shopping,
   });
   await seedCategoryWordPairs({
     client: client,
@@ -1080,7 +1088,7 @@ async function main() {
   await seedCategoryWordPairs({
     client: client,
     lang_from: "en",
-    lang_to: "hi",
+    lang_to: "ru",
     category_id: "2fa3b5c4-2841-4e0b-9468-bfd9395fa8bb",
     data: wordPairs_en_ru_travel,
   });
