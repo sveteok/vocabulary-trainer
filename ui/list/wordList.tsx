@@ -16,6 +16,7 @@ export default function WordList() {
     selectedWordsQuantity,
     maxNumToSelect,
     onUpdateWordSelectedState,
+    isNextBtnDisabled,
   } = useWordList();
 
   return (
@@ -33,6 +34,7 @@ export default function WordList() {
             label: localization?.go_to_practice || "Go to practice",
             icon: <NavigateNextRoundedIcon />,
             id: "menu",
+            disabled: isNextBtnDisabled,
           },
         ]}
         value="next"

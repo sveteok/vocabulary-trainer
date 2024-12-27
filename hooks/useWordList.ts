@@ -15,6 +15,7 @@ interface WordListProp {
   wordPairs: WordPairsProp[];
   selectedWordsQuantity: number;
   maxNumToSelect: number;
+  isNextBtnDisabled: boolean;
   onUpdateWordSelectedState: (id: string, checked: boolean) => void;
 }
 
@@ -73,6 +74,7 @@ export function useWordList(): WordListProp {
     selectedWordsQuantity: selectedWords.length,
     maxNumToSelect,
     onUpdateWordSelectedState,
+    isNextBtnDisabled: selectedWords.length === 0,
   };
 }
 
