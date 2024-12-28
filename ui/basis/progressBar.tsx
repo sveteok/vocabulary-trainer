@@ -50,7 +50,7 @@ export default function ProgressBar(props: ProgressBarProps) {
             title={localization?.restart || "Restart"}
             onClick={restart}
             ref={restartButtonRef}
-            className="focus:outline-none flex flex-row gap-2 items-center hover:cursor-pointer"
+            className="flex flex-row gap-2 px-2 items-center hover:cursor-pointer focus-visible:ring focus:ring-1 focus:outline-blue-700 focus:rounded-md"
           >
             <RestartAltRoundedIcon />
             <span className="hidden md:block text-sm">

@@ -88,6 +88,7 @@ export const QuizeCards = () => {
                     form.localization?.select_correct_translation ||
                     "Select the correct translation"
                   }
+                  isNextBtnDisabled={isNextBtnDisabled}
                 />
               </div>
             </>

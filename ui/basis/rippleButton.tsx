@@ -98,6 +98,7 @@ const RippleButton: React.FC<RippleButtonProps> = (props) => {
       active:bg-[#87837e] active:text-[#fff]
       disabled:bg-gray-300 disabled:opacity-25
       outline-none
+      focus:ring-1 focus:outline-blue-700
       `}
     >
       <span

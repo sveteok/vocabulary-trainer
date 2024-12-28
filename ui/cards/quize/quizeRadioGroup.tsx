@@ -1,6 +1,6 @@
 import { lusitana } from "@/ui/fonts";
 
-import React from "react";
+import { useEffect, useState } from "react";
 
 import InfoContainer, { InfoContainerStates } from "@/ui/basis/infoContainer";
 
@@ -18,6 +18,7 @@ type RadioGroupProps = {
   correctAnswerId?: string;
   onSelect?: (value: string) => void;
   headText?: string;
+  isNextBtnDisabled?: boolean;
 };
 
 export default function QuizeRadioGroup(props: RadioGroupProps) {
@@ -28,29 +29,48 @@ export default function QuizeRadioGroup(props: RadioGroupProps) {
     value,
     onSelect = (value: string) => {},
     headText,
+    isNextBtnDisabled,
   } = props;
+
+  const [groupOptions, setGroupOptions] = useState<RadioGroupType[]>(
+    fillGroupOptions(options)
+  );
+  const [focusedElement, setFocusedElement] = useState<HTMLElement | null>(
+    null
+  );
+
+  useKeyDown(
+    (e) => {
+      if (onSelect === undefined) return;
+
+      if (
+        (e.key === "Enter" || e.code === "Space") &&
+        focusedElement !== null
+      ) {
+        focusedElement.click();
+      } else if (["1", "2", "3", "4"].includes(e.key)) {
+        const option: RadioGroupType = groupOptions[parseInt(e.key) - 1];
+        onSelect(option.id);
+      }
+    },
+    [groupOptions, focusedElement]
+  );
+
+  useEffect(() => {
+    setGroupOptions(fillGroupOptions(options));
+    setFocusedElement(null);
+  }, [options]);
 
   const handleOptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onSelect(e.target.value);
   };
-
-  const fillGroupOptions = (data?: RadioGroupType[]) => {
-    const options = data ? [...data] : [];
-    const length = data ? 4 - data.length : 4;
-    for (var i = 0; i < length; i++) {
-      options.push({ id: `o_${i}`, name: "\u00A0" });
-    }
-    return options;
-  };
-
-  const groupOptions = fillGroupOptions(options);
 
   return (
     <div className="flex flex-col w-full text-[#232a32]">
       <h1 className={`${lusitana.className} text-sm p-2 mt-2`}>
         {headText || "Select the correct translation"}
       </h1>
-      {groupOptions.map((option) => (
+      {groupOptions.map((option, index) => (
         <div key={`${option.id}`} id={`toggle_button_${option.id}`}>
           <input
             name="quize_radio_group"
@@ -66,6 +86,13 @@ export default function QuizeRadioGroup(props: RadioGroupProps) {
           <label
             htmlFor={`radio_group_option_${option.id}`}
             key={`radio_group_option_label_${option.id}`}
+            tabIndex={isNextBtnDisabled ? 0 : -1}
+            onFocus={(e) => {
+              if (!isNextBtnDisabled) e.preventDefault();
+              setFocusedElement(
+                document.getElementById(`radio_group_option_${option.id}`)
+              );
+            }}
           >
             <InfoContainer
               id={option.id}
@@ -78,7 +105,7 @@ export default function QuizeRadioGroup(props: RadioGroupProps) {
               }
               rippleEffectDisabled={value !== undefined && value?.length > 0}
             >
-              {option.name}
+              {index + 1}. {option.name}
             </InfoContainer>
           </label>
         </div>
@@ -86,3 +113,25 @@ export default function QuizeRadioGroup(props: RadioGroupProps) {
     </div>
   );
 }
+
+const fillGroupOptions = (data?: RadioGroupType[]) => {
+  const options = data ? [...data] : [];
+  const length = data ? 4 - data.length : 4;
+  for (var i = 0; i < length; i++) {
+    options.push({ id: `o_${i}`, name: "\u00A0" });
+  }
+  return options;
+};
+
+const useKeyDown = (
+  handler: (this: Document, ev: KeyboardEvent) => void,
+  deps: any[] = []
+) => {
+  useEffect(() => {
+    document.addEventListener("keyup", handler);
+
+    return () => {
+      document.removeEventListener("keyup", handler);
+    };
+  }, deps);
+};
