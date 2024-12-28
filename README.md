@@ -211,12 +211,6 @@ npm install motion
 npm install react-card-flip
 ```
 
-## Planned Features
-
-**AI-Generated Content Expansion**:
-   - Use AI to periodically add new word pairs and categories.
-   - Schedule content updates every few months to keep the app fresh.
-
 ### Additional Notes
 
 This app demonstrates the power of modern web technologies for educational purposes. Contributions, feedback, and feature suggestions are welcome! For further assistance with deploying the project on Vercel, refer to the Vercel CLI documentation https://vercel.com/docs/cli or the Next.js database setup guide https://nextjs.org/learn/dashboard-app/setting-up-your-database.
