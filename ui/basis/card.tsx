@@ -35,8 +35,10 @@ const Card = (props: {
     <div
       className={`${className} 
       flex flex-1 flex-col justify-center items-center gap-2 h-full
-      bg-[#f8f7f5] text-[#232a32]   
-      border-2 border-[#87837e] rounded-md  
+       text-natural-gray-700
+      bg-natural-gray-100
+      border-8 border-natural-gray-300   rounded-md  
+      
       focus:ring-1 outline-[#a49487]
       ${
         isFrontSide
@@ -57,9 +59,9 @@ const Card = (props: {
         <div
           className={`text-gray-500 text-sm flex-1 flex flex-col justify-end p-4 ${
             infoState === CardInfoStates.ERROR
-              ? "text-[#ff355e]"
+              ? "text-error"
               : infoState === CardInfoStates.CORRECT
-              ? "text-[#009966]"
+              ? "text-success"
               : ""
           }`}
         >

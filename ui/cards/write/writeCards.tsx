@@ -13,8 +13,8 @@ import WriteCardInputContent from "@/ui/cards/write/writeCardInputContent";
 
 export const WriteCards = () => {
   const {
+    form,
     writeCard,
-    localization,
     onResetHandler,
     onUpdateAnswerHandler,
     onCheckAnswerHandler,
@@ -27,7 +27,6 @@ export const WriteCards = () => {
     total,
     isAnswerInputDisabled,
     nextButtonRef,
-    restartButtonRef,
     answerButtonRef,
     answerInputRef,
   } = useWriteCard();
@@ -39,21 +38,29 @@ export const WriteCards = () => {
           total={total}
           remaining={remaining}
           restart={onResetHandler}
-          restartButtonRef={restartButtonRef}
-          localization={localization}
+          showBackButton={true}
+          pageName="Training mode"
         />
       </SubMenu>
       <MainContainer
         actions={[
           {
-            label: localization?.next_page || "Next",
+            label:
+              (form.language &&
+                form.translation_language &&
+                form.localization?.next_page) ||
+              "",
             icon: <NavigateNextRoundedIcon />,
             id: "next",
             disabled: isNextBtnDisabled,
             ref: nextButtonRef,
           },
           {
-            label: localization?.check_answer || "Check answer",
+            label:
+              (form.language &&
+                form.translation_language &&
+                form.localization?.check_answer) ||
+              "",
             icon: <CheckRoundedIcon />,
             id: "check_answer",
             disabled: isCheckAnswerBtnDisabled,
@@ -68,12 +75,14 @@ export const WriteCards = () => {
 
         {!isGameDone && (
           <WriteCardInputContent
-            writeCard={writeCard}
+            writeCard={
+              form.language && form.translation_language ? writeCard : undefined
+            }
             onUpdateAnswerHandler={onUpdateAnswerHandler}
             onCheckAnswerHandler={onCheckAnswerHandler}
             answerInputRef={answerInputRef}
             isAnswerInputDisabled={isAnswerInputDisabled}
-            localization={localization}
+            localization={form.localization}
           />
         )}
       </MainContainer>

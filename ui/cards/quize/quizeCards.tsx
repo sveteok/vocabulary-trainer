@@ -36,8 +36,6 @@ export const QuizeCards = () => {
     isNextBtnInFocus: wordCard?.selectedWordId !== undefined,
   });
 
-  const localization = form.localization?.[`${form.language}`];
-
   return (
     <>
       <SubMenu>
@@ -45,15 +43,15 @@ export const QuizeCards = () => {
           total={total}
           remaining={remaining}
           restart={onResetHandler}
-          restartButtonRef={restartButtonRef}
-          localization={form.localization}
+          showBackButton={true}
+          pageName="Quize Game"
         />
       </SubMenu>
 
       <MainContainer
         actions={[
           {
-            label: form.localization?.next_page || "Next",
+            label: wordCard?.word ? form.localization?.next_page || "" : "",
             icon: <NavigateNextRoundedIcon />,
             id: "next",
             disabled: isNextBtnDisabled,
@@ -75,9 +73,9 @@ export const QuizeCards = () => {
                 id={wordCard?.word.word_id}
                 name={wordCard?.word.word_name}
                 hideDetails={true}
-                className="min-h-[100px]"
+                className="flex flex-1 min-h-[80px]"
               />
-              <div className="flex flex-1">
+              <div className="flex ">
                 <QuizeRadioGroup
                   name="Answers"
                   options={wordCard?.answers}
@@ -85,8 +83,9 @@ export const QuizeCards = () => {
                   value={wordCard?.selectedWordId || ""}
                   onSelect={onSelectAnswerHandler}
                   headText={
-                    form.localization?.select_correct_translation ||
-                    "Select the correct translation"
+                    wordCard?.answers
+                      ? form.localization?.select_correct_translation
+                      : ""
                   }
                   isNextBtnDisabled={isNextBtnDisabled}
                 />

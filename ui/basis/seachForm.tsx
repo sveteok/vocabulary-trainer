@@ -12,7 +12,7 @@ const SeachForm = ({
 }) => {
   return (
     <form
-      className="flex flex-1 items-center col-span-2 justify-items-stretch"
+      className="flex flex-1 items-center col-span-2 justify-items-stretch py-2 px-1"
       onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
@@ -33,14 +33,24 @@ const SeachForm = ({
         }}
         autoComplete="off"
         placeholder={placeholderText || ""}
-        className="py-2 px-4 w-full bg-gray-50 
-            rounded-md border-2 border-[#87837e] focus:ring-[#87837e] focus:border-[#87837e] outline-none  gap-2"
+        className="py-2 px-4 w-full 
+                border-natural-gray-300
+                bg-natural-gray-50
+                focus:ring-1 focus:outline-natural-gray-100
+                rounded-md border-2 gap-2
+                
+               
+            "
         required={true}
         aria-describedby="filter words"
         autoFocus
       />
       <IconButton type="submit" aria-label="search">
-        <SearchIcon style={{ fill: "#87837e" }} />
+        <SearchIcon
+          style={{ fill: "var(--data-color)" }}
+          className="data-color:color-natural-gray-700"
+          data-color
+        />
       </IconButton>
     </form>
   );

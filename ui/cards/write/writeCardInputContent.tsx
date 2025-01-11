@@ -6,6 +6,7 @@ import { LocalizationProps } from "@/lib/definitions";
 
 import InfoContainer from "@/ui/basis/infoContainer";
 import Card from "@/ui/basis/card";
+import { LoadingSkeleton } from "@/ui/basis/loadingSkeleton";
 
 const WriteCardInputContent = (props: {
   writeCard?: CurrentWriteCardProp;
@@ -52,7 +53,7 @@ const WriteCardInputContent = (props: {
           infoState={infoContainerState}
           rippleEffectDisabled={true}
         >
-          {infoContainerText}
+          {infoContainerText || <LoadingSkeleton />}
         </InfoContainer>
       )}
 
@@ -74,7 +75,12 @@ const WriteCardInputContent = (props: {
           }}
           autoComplete="off"
           placeholder={inputPlaceHolder}
-          className="p-4 mb-1 bg-[#f8f7f5] border-2 border-[#87837e] rounded-md  gap-4 focus:ring-1 outline-[#a49487]"
+          className="p-4 mb-1 gap-4 
+                      border-2 border-natural-gray-100 rounded-md  
+                      bg-natural-gray-50
+                      outline-border-natural-gray-100
+                      focus:ring-current focus:outline-natural-gray-50
+                      "
           required={true}
           aria-describedby={inputPlaceHolder}
           autoFocus

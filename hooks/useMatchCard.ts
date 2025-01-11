@@ -46,6 +46,8 @@ export interface MatchCardDataProp {
   playingBlocks?: PlayingBlocksProp;
   currentPlayingBlock?: PlayingBlockProp;
   flipped?: boolean;
+  total: number;
+  remaining: number;
 }
 
 interface MatchCardsDataProp {
@@ -58,10 +60,6 @@ interface MatchCardsDataProp {
     card_type: CardTypes
   ) => void;
   isGameDone: boolean;
-  restartButtonRef: RefObject<HTMLButtonElement | null>;
-  total: number;
-  remaining: number;
-  correct: number;
 }
 
 export function useMatchCard({
@@ -180,6 +178,7 @@ export function useMatchCard({
       setData((state) => {
         if (!state || !state.currentPlayingBlock) return state;
 
+        let remaining = state.remaining;
         let usedWords = state.usedWords;
         let playingBlocks = state.playingBlocks;
         let currentPlayingBlock = { ...state.currentPlayingBlock };
@@ -272,6 +271,8 @@ export function useMatchCard({
         if (currentWordId !== undefined && correctCardId !== null) {
           let notUsed = false;
 
+          remaining -= 1;
+
           playingBlocks = { ...state.playingBlocks };
           const len = playingBlocks.length
             ? (playingBlocks.length as number)
@@ -310,6 +311,7 @@ export function useMatchCard({
             currentWord: currentCard,
             currentTranslatedWord: currentTranslatedCard,
           },
+          remaining: remaining,
         };
       });
     },
@@ -322,18 +324,12 @@ export function useMatchCard({
     data.wordPairs.length !== 0 &&
     data.wordPairs.length === data.usedWords.length;
 
-  const restartButtonRef = useRef<HTMLButtonElement | null>(null);
-
   return {
     data,
     getNextCardHandler,
     onResetHandler,
     onCardClickHandler,
     isGameDone,
-    restartButtonRef,
-    total: data.wordPairs.length,
-    remaining: data.wordPairs.length - data.usedWords.length,
-    correct: data.usedWords.length,
   };
 }
 
@@ -351,6 +347,8 @@ function initializeMatchCard(wordPairs?: WordPairsProp[]) {
         currentTranslatedWord: null,
       },
       flipped: false,
+      total: 0,
+      remaining: 0,
     } as MatchCardDataProp;
 
   const playingCards = generatePlayingCards([...wordPairs]);
@@ -368,6 +366,8 @@ function initializeMatchCard(wordPairs?: WordPairsProp[]) {
       currentTranslatedWord: null,
     },
     flipped: false,
+    total: playingCards.length,
+    remaining: playingCards.length,
   } as MatchCardDataProp;
 }
 

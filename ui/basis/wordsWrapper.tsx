@@ -1,11 +1,12 @@
 import { Metadata } from "next";
+import { notFound } from "next/navigation";
 
 import { WordPairsQueryProp } from "@/lib/definitions";
 import { getCachedCardSets } from "@/lib/data";
 import WordsContextWrapper from "@/ui/store-provider/wordsContextWrapper";
 
 export const metadata: Metadata = {
-  title: "Card List",
+  title: "Cards",
 };
 
 interface GameLayoutProps {
@@ -20,7 +21,7 @@ export default async function WordsPairWrapper({
   const { cat_id, lang_from, lang_to } = params;
 
   if (!cat_id || !lang_from || !lang_to) {
-    return "Failed to fetch data!!!.";
+    return notFound();
   }
 
   const language = lang_from;

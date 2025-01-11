@@ -7,6 +7,7 @@ import MainContainer from "@/ui/basis/mainContainer";
 import SubMenu from "@/ui/basis/subMenu";
 
 import { useTranslatedLanguage } from "@/hooks/useTranslatedLanguage";
+import { LoadingSkeleton } from "@/ui/basis/loadingSkeleton";
 
 export default function LangToPage() {
   const {
@@ -21,14 +22,18 @@ export default function LangToPage() {
     <>
       <SubMenu>
         <div className="pl-3">
-          {(localization.select_language || "Select Language") + "..."}
+          {lang_to && localization.select_language ? (
+            localization?.select_language + "..."
+          ) : (
+            <LoadingSkeleton />
+          )}
         </div>
       </SubMenu>
 
       <MainContainer
         actions={[
           {
-            label: localization.next_page || "Next",
+            label: (lang_to && localization.next_page) || "",
             icon: <NavigateNextRoundedIcon />,
             id: "next",
           },

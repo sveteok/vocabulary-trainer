@@ -2,150 +2,78 @@
 
 import Link from "next/link";
 
-import { LocalizationProps } from "@/lib/definitions";
 import { useSiteNavigation } from "@/hooks/useSiteNavigation";
+import { FormType } from "@/store/dict-context";
+import { getSelectedWordsQuantity } from "@/lib/utils";
+import { LoadingSkeleton } from "@/ui/basis/loadingSkeleton";
 
 export default function SiteNavigation() {
-  const {
-    language,
-    language_name,
-    translation_language,
-    translation_language_name,
-    category,
-    category_name,
-    gameType,
-    localization,
-  } = useSiteNavigation();
+  const { form, language, translation_language, category } =
+    useSiteNavigation();
 
   return (
     <nav
       role="navigation"
-      className="flex flex-col h-[100px] p-2 gap-2  bg-[#595754]  text-[#ffffff]  text-sm"
+      className="flex flex-col p-4 gap-2 bg-natural-gray-600 text-natural-gray-50 min-h-[70px]"
     >
-      <div className="flex flex-row gap-3">
+      <div
+        className="flex flex-row justify-center text-xs gap-2
+                    data-[category=false]:text-lg 
+                    data-[category=false]:items-center 
+                    data-[category=false]:flex-1
+                  "
+        data-category={category !== undefined}
+      >
         <LanguageContent
+          form={form}
           language={language}
-          language_name={language_name}
-          localization={localization}
+          language_name={form.language_name}
         />
-        <TranslationLanguageContent
-          language={language}
-          language_name={language_name}
-          translation_language={translation_language}
-          translation_language_name={translation_language_name}
-          localization={localization}
-        />
+        <TranslationLanguageContent language={language} form={form} />
       </div>
-
-      <CategoryContent
-        category={category}
-        language={language}
-        translation_language={translation_language}
-        category_name={category_name}
-        localization={localization}
-      />
-
-      <div className="flex flex-row gap-3">
-        <WordListContent
-          category={category}
-          language={language}
-          translation_language={translation_language}
-          category_name={category_name}
-          gameType={gameType}
-          localization={localization}
-        />
-        <TrainingTypeContent
-          category={category}
-          language={language}
-          translation_language={translation_language}
-          category_name={category_name}
-          gameType={gameType}
-          localization={localization}
-        />
-      </div>
-
-      {!(language || language) && !translation_language && !category && (
-        <div>
-          {localization.select_application_language || "Select language"}...
+      {category && (
+        <div className="flex flex-row">
+          <div className="flex flex-1 justify-center">
+            <CategoryContent
+              category={category}
+              language={language}
+              translation_language={translation_language}
+              category_name={form.category_name}
+              form={form}
+            />
+          </div>
         </div>
       )}
     </nav>
   );
 }
 
-const TranslationLanguageContent = ({
-  language,
-  language_name,
-  translation_language,
-  translation_language_name,
-  localization,
-}: {
-  language?: string;
-  language_name?: string;
-  translation_language?: string;
-  translation_language_name?: string;
-  localization: LocalizationProps;
-}) => {
-  if (!language || !language_name) return <></>;
+const linkClassName =
+  "hover:underline hover:underline-offset-1 hover:decoration-1 ";
 
-  if (!translation_language_name)
-    return (
-      <div className="flex gap-2">
-        <p>/</p>...
-      </div>
-    );
-
-  let translationLanguageContent = <>...</>;
-
-  if (translation_language) {
-    translationLanguageContent = (
-      <div className="flex gap-2">
-        <p>/</p>
-        <Link
-          className="underline hover:underline-offset-2 hover:decoration-2"
-          href={`/${language}/`}
-        >
-          {localization?.[`${translation_language}`] || translation_language}
-        </Link>
-      </div>
-    );
-  } else {
-    translationLanguageContent = (
-      <div className="opacity-30 flex gap-2">
-        <p>/</p>
-        {localization?.[`${translation_language_name}`] ||
-          translation_language_name}
-      </div>
-    );
-  }
-
-  return <div>{translationLanguageContent}</div>;
-};
+const focusClassName = "focus:outline-natural-gray-50 outline-natural-gray-50 ";
 
 const LanguageContent = ({
   language,
   language_name,
-  localization,
+  form,
 }: {
   language?: string;
   language_name?: string;
-  localization: LocalizationProps;
+  form: FormType;
 }) => {
-  let languageContent = <>...</>;
+  let languageContent = <></>;
 
-  if (language && language_name) {
+  if (language && form.language && language_name) {
     languageContent = (
-      <Link
-        className="underline hover:underline-offset-2 hover:decoration-2"
-        href={`/`}
-      >
-        {language_name || language}
+      <Link className={`${linkClassName} ${focusClassName}`} href={`/`}>
+        {language_name}
       </Link>
     );
-  } else if (!language) {
+  } else {
     languageContent = (
-      <div className="flex gap-2">
-        {localization.application_language || "Application language"}:
+      <div className="flex gap-2 items-center">
+        {form.localization.application_language || "Application language"}:
         <p className="opacity-30">{language_name || "..."}</p>
       </div>
     );
@@ -154,89 +82,39 @@ const LanguageContent = ({
   return <div>{languageContent}</div>;
 };
 
-const TrainingTypeContent = ({
-  category,
+const TranslationLanguageContent = ({
   language,
-  translation_language,
-  category_name,
-  gameType,
-  localization,
+  form,
 }: {
-  category?: string;
   language?: string;
-  translation_language?: string;
-  category_name?: string;
-  gameType: string;
-  localization: LocalizationProps;
+  form: FormType;
 }) => {
-  if (!category || !language! || !translation_language || !category_name) {
-    return <div></div>;
-  }
+  if (!language || !form.language || !form.language_name) return <></>;
 
-  let trainingTypeContent = <></>;
+  let translationLanguageContent = <></>;
 
-  if (gameType === "menu") {
-    trainingTypeContent = <>{localization.training_type || "Training type"}</>;
-  } else if (gameType.length > 0) {
-    trainingTypeContent = (
+  if (form.translation_language && form.translation_language_name) {
+    translationLanguageContent = (
       <div className="flex gap-2">
+        <p>/</p>
         <Link
-          className="underline hover:underline-offset-2 hover:decoration-2 "
-          color="inherit"
-          href={`/${language}/${translation_language}/${category}/menu`}
+          className={`${linkClassName}  ${focusClassName}`}
+          href={`/${form.language}/`}
         >
-          {localization.training_type || "Training type"}:
+          {form.translation_language_name}
         </Link>
-        <p>{localization?.[`${gameType}`] || gameType}</p>
+      </div>
+    );
+  } else {
+    translationLanguageContent = (
+      <div className="opacity-30 flex gap-2">
+        <p>/</p>
+        <LoadingSkeleton />
       </div>
     );
   }
 
-  return <div>{trainingTypeContent}</div>;
-};
-
-const WordListContent = ({
-  category,
-  language,
-  translation_language,
-  category_name,
-  gameType,
-  localization,
-}: {
-  category?: string;
-  language?: string;
-  translation_language?: string;
-  category_name?: string;
-  gameType: string;
-  localization: LocalizationProps;
-}) => {
-  let wordListContent = <></>;
-
-  if (!category || !language || !translation_language || !category_name) {
-    return <div>{wordListContent}</div>;
-  }
-
-  if (
-    category &&
-    language &&
-    translation_language &&
-    category_name &&
-    gameType.length === 0
-  ) {
-    wordListContent = <>{localization.word_list || "Word list"}</>;
-  } else if (category) {
-    wordListContent = (
-      <Link
-        className="underline hover:underline-offset-2 hover:decoration-2 "
-        color="inherit"
-        href={`/${language}/${translation_language}/${category}`}
-      >
-        {localization.word_list || "Word list"}
-      </Link>
-    );
-  }
-
-  return <div>{wordListContent}</div>;
+  return <div>{translationLanguageContent}</div>;
 };
 
 const CategoryContent = ({
@@ -244,34 +122,46 @@ const CategoryContent = ({
   language,
   translation_language,
   category_name,
-  localization,
+  form,
 }: {
   category?: string;
   language?: string;
   translation_language?: string;
   category_name?: string;
-  localization: LocalizationProps;
+  form: FormType;
 }) => {
+  if (!language || !translation_language) {
+    return <></>;
+  }
   let categoryContent = <></>;
-  if (category && language && translation_language && category_name) {
+
+  if (category && category_name) {
+    const selectedWordsQuantity = getSelectedWordsQuantity();
     categoryContent = (
-      <>
+      <div className="flex flex-col gap-2 items-center">
         <Link
-          className="underline hover:underline-offset-2 hover:decoration-2"
-          color="inherit"
-          href={`/${language}/${translation_language}/`}
+          className={`${linkClassName} ${focusClassName} font-bold text-lg`}
+          href={`/${form.language}/${form.translation_language}/`}
         >
-          {localization.category || "Category"}:
+          {category_name}
         </Link>
-        {category_name || <p>...</p>}
-      </>
+
+        <Link
+          className={`${linkClassName}  ${focusClassName} text-xs `}
+          href={`/${language}/${translation_language}/${category}`}
+        >
+          {`${selectedWordsQuantity} ${
+            selectedWordsQuantity === 1 ? "word" : "words"
+          }`}
+        </Link>
+      </div>
     );
-  } else if (language && translation_language && category_name) {
+  } else if (category) {
     categoryContent = (
-      <>
-        {localization.category || "Category"}:
-        <p className="opacity-30">{category_name}</p>
-      </>
+      <div className="flex flex-col gap-2 items-center ">
+        <LoadingSkeleton />
+        <LoadingSkeleton className="text-xs" />
+      </div>
     );
   }
 

@@ -38,8 +38,8 @@ export const CardSlideShow = () => {
           total={pageCount}
           remaining={pageCount === 0 ? 0 : pageCount - wordCardsState.page - 1}
           restart={restartHandler}
-          restartButtonRef={restartButtonRef}
-          localization={form.localization}
+          showBackButton={true}
+          pageName="View Cards"
         />
       </SubMenu>
 
@@ -47,7 +47,10 @@ export const CardSlideShow = () => {
         actions={[
           {
             id: "revert",
-            label: form.localization?.revert_cards || "Revert cards",
+            label:
+              form.language && form.translation_language && form.category
+                ? form.localization?.revert_cards || ""
+                : "",
             icon: <FlipCameraAndroidRoundedIcon />,
           },
         ]}
@@ -62,7 +65,7 @@ export const CardSlideShow = () => {
               value="back"
               onClick={() => paginateHandler(-1)}
               disabled={isPrevButtonDisabled}
-              className={`${navBtnClassName} left-5`}
+              className={`${navBtnClassName} ml-2 left-7`}
             >
               <ArrowBackIosNewRoundedIcon />
             </button>
@@ -80,7 +83,7 @@ export const CardSlideShow = () => {
               value="next"
               onClick={() => paginateHandler(1)}
               disabled={isNextButtonDisabled}
-              className={`${navBtnClassName} right-5`}
+              className={`${navBtnClassName} mr-2 right-7`}
             >
               <ArrowForwardIosRoundedIcon />
             </button>
@@ -93,19 +96,31 @@ export const CardSlideShow = () => {
 
 const navBtnClassName = `
       absolute md:static z-10
-      p-2  
-      border-2 border-[#32302f] rounded-full 
-      bg-[#87837e] text-[#fff]
-      hover:border-[#414f4d]
-      hover:text-[#414f4d]
-      hover:bg-[#d5cddc]
-      hover:cursor-pointer
-      active:bg-[#87837e] active:text-[#fff]
-      disabled:bg-gray-300
-      disabled:opacity-25
-      outline-none
-      focus:pointer-events-auto
-      enabled:pointer-events-auto
-      pointer-events-none
-      flex-none
+      border-2 border-natural-gray-100 rounded-full 
+                  bg-natural-gray-900 text-natural-gray-50
+                  hover:border-natural-gray-100
+                  hover:text-white
+                  hover:bg-natural-gray-600
+                  hover:cursor-pointer
+                  disabled:opacity-25
+                  outline-none
+                  enabled:pointer-events-auto
+                  pointer-events-none
+                  focus:pointer-events-auto focus:ring-current focus:outline-natural-gray-50
+      p-2
       `;
+// p-2
+// border-2 border-[#32302f] rounded-full
+// bg-[#87837e] text-[#fff]
+// hover:border-[#414f4d]
+// hover:text-[#414f4d]
+// hover:bg-[#d5cddc]
+// hover:cursor-pointer
+// active:bg-[#87837e] active:text-[#fff]
+// disabled:bg-gray-300
+// disabled:opacity-25
+// outline-none
+// focus:pointer-events-auto
+// enabled:pointer-events-auto
+// pointer-events-none
+// flex-none

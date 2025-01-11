@@ -11,3 +11,10 @@ export const shuffleObjects = (
 
   return arr;
 };
+
+export function getSelectedWordsQuantity() {
+  const selectedWords: string[] = JSON.parse(
+    localStorage.getItem("selectedWords") || "[]"
+  );
+  return selectedWords.length;
+}

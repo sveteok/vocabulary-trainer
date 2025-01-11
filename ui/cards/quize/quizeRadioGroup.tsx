@@ -1,10 +1,9 @@
-import { lusitana } from "@/ui/fonts";
-
 import { useEffect, useState } from "react";
 
 import InfoContainer, { InfoContainerStates } from "@/ui/basis/infoContainer";
 
 import { KeyValueObjectType } from "@/lib/definitions";
+import { LoadingSkeleton } from "@/ui/basis/loadingSkeleton";
 
 export interface RadioGroupType {
   id: string;
@@ -40,7 +39,7 @@ export default function QuizeRadioGroup(props: RadioGroupProps) {
   );
 
   useKeyDown(
-    (e) => {
+    (e: KeyboardEvent) => {
       if (onSelect === undefined) return;
 
       if (
@@ -66,10 +65,8 @@ export default function QuizeRadioGroup(props: RadioGroupProps) {
   };
 
   return (
-    <div className="flex flex-col w-full text-[#232a32]">
-      <h1 className={`${lusitana.className} text-sm p-2 mt-2`}>
-        {headText || "Select the correct translation"}
-      </h1>
+    <div className="flex flex-col w-full">
+      <h1 className={`text-sm p-2 mt-2`}>{headText || <LoadingSkeleton />}</h1>
       {groupOptions.map((option, index) => (
         <div key={`${option.id}`} id={`toggle_button_${option.id}`}>
           <input
@@ -93,6 +90,7 @@ export default function QuizeRadioGroup(props: RadioGroupProps) {
                 document.getElementById(`radio_group_option_${option.id}`)
               );
             }}
+            className="focus:outline-natural-gray-50 outline-natural-gray-50"
           >
             <InfoContainer
               id={option.id}

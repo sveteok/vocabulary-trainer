@@ -54,7 +54,7 @@ export default function RunningLine({
             <div
               id={`childrenBlock_${i}`}
               key={`childrenBlock_${i}`}
-              className="flex w-max animate-slide-animation border-y-0 border-y-blue-500"
+              className="flex w-max animate-slide-animation border-y-0"
             >
               {children}
             </div>

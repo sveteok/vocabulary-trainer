@@ -15,14 +15,16 @@ const WordRow = ({
   return (
     <div
       key={item.id}
-      className={`flex flex-row items-center border-b-2 border-[#87837e] overflow-auto`}
+      className={`flex flex-row items-center border-b border-natural-gray-700 overflow-auto`}
     >
       <div className="flex flex-1 flex-col gap-0 m-0 p-0">
         <div> {item.word_name}</div>
-        <div className="text-gray-500 text-sm">{item.translated_word_name}</div>
+        <div className="text-natural-gray-700 text-sm">
+          {item.translated_word_name}
+        </div>
       </div>
       <div className="flex-end">
-        <span className="opacity-20 text-gray-400">
+        <span className="opacity-20 text-natural-gray-400">
           {item.learned
             ? localization?.learned || "learned word"
             : localization?.new_word || "new word"}
@@ -30,8 +32,9 @@ const WordRow = ({
         <Checkbox
           checked={item.selected === undefined ? false : item.selected}
           value={item.id}
+          id={item.id}
           aria-label="select words to study"
-          {...{ inputProps: { "aria-label": "Checkbox demo" } }}
+          {...{ inputProps: { "aria-label": "word checkbox" } }}
           disabled={!canSelectMoreWords && !item.selected}
           onChange={(
             e: React.ChangeEvent<HTMLInputElement>,
@@ -39,11 +42,15 @@ const WordRow = ({
           ) => {
             onChangeWordSelectState(item.id, checked);
           }}
-          className="disabled:opacity-10"
+          onKeyUp={(e: React.KeyboardEvent<HTMLButtonElement>) => {
+            if (e.key === "Enter" && document.activeElement?.id === item.id) {
+              (document.activeElement as HTMLElement).click();
+            }
+          }}
           sx={{
-            color: "#87837e",
+            color: "var(--data-color)",
             "&.Mui-checked": {
-              color: "#87837e",
+              color: "var(--data-color)",
             },
             "&.Mui-disabled": {
               pointerEvents: "auto",
@@ -56,6 +63,8 @@ const WordRow = ({
               },
             },
           }}
+          className="disabled:opacity-10 data-color:color-natural-gray-700"
+          data-color
         />
       </div>
     </div>

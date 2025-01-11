@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext, useRef, RefObject } from "react";
 import { WordPairsProp, LocalizationProps } from "@/lib/definitions";
-import { DictionaryContext } from "@/store/dict-context";
+import { DictionaryContext, FormType } from "@/store/dict-context";
 import { useWriteBtnControl } from "@/hooks/useWriteBtnControl";
 
 export enum CardResultTypes {
@@ -23,8 +23,9 @@ export interface WriteCardDataProp {
 }
 
 interface WriteCardDataType {
+  form: FormType;
   writeCard?: CurrentWriteCardProp;
-  localization: LocalizationProps;
+
   onResetHandler: () => void;
   onUpdateAnswerHandler: (answer: string) => void;
   onCheckAnswerHandler: () => void;
@@ -34,7 +35,7 @@ interface WriteCardDataType {
   total: number;
   remaining: number;
   nextButtonRef: RefObject<HTMLButtonElement | null>;
-  restartButtonRef: RefObject<HTMLButtonElement | null>;
+
   answerButtonRef: RefObject<HTMLButtonElement | null>;
   answerInputRef: RefObject<HTMLInputElement | null>;
   isNextBtnDisabled: boolean;
@@ -72,12 +73,13 @@ export function useWriteCard(): WriteCardDataType {
     action = "check_answer";
   }
 
-  const { nextButtonRef, restartButtonRef, answerButtonRef, answerInputRef } =
-    useWriteBtnControl({
+  const { nextButtonRef, answerButtonRef, answerInputRef } = useWriteBtnControl(
+    {
       isRestartBtnInFocus: isGameDone,
       isNextBtnInFocus: action === "next",
       isAnswerInputInFocus: action === "answer",
-    });
+    }
+  );
 
   const getNextCardHandler = (needReset: boolean) => {
     setData((state) => {
@@ -120,7 +122,7 @@ export function useWriteCard(): WriteCardDataType {
         ...state,
         writingCurrCard: {
           ...state.writingCurrCard,
-          answer: answer.toLocaleLowerCase(),
+          answer: answer,
         },
       };
     });
@@ -130,9 +132,17 @@ export function useWriteCard(): WriteCardDataType {
     setData((state) => {
       if (!state.writingCurrCard) return state;
 
-      let isCorrectAnswer =
-        state.writingCurrCard.answer?.trim() ===
-        state.writingCurrCard.word.translated_word_name.trim();
+      const regex = new RegExp(
+        String.raw`${state.writingCurrCard.word.translated_word_name
+          .replace(/[\p{P}\p{S} ]/gu, "")
+          .toLocaleLowerCase()}`,
+        "g"
+      );
+
+      const isCorrectAnswer = state.writingCurrCard.answer
+        ?.replace(/[\p{P}\p{S} ]/gu, "")
+        .toLocaleLowerCase()
+        .match(regex);
 
       let usedWords = [...state.usedWords];
 
@@ -169,8 +179,8 @@ export function useWriteCard(): WriteCardDataType {
   };
 
   return {
+    form,
     writeCard,
-    localization: form.localization,
     onResetHandler,
     onUpdateAnswerHandler,
     onCheckAnswerHandler,
@@ -189,7 +199,6 @@ export function useWriteCard(): WriteCardDataType {
       writeCard.answer.trim().length === 0,
     isAnswerInputDisabled: writeCard?.result !== CardResultTypes.NO_ANSWER,
     nextButtonRef,
-    restartButtonRef,
     answerButtonRef,
     answerInputRef,
   };

@@ -4,8 +4,6 @@ import Radio from "@mui/material/Radio";
 import InputLabel from "@mui/material/InputLabel";
 import FormControlLabel from "@mui/material/FormControlLabel";
 
-import { lusitana } from "@/ui/fonts";
-
 import { KeyValueObjectType } from "@/lib/definitions";
 
 export default function FormItemGroup(props: {
@@ -41,7 +39,7 @@ export default function FormItemGroup(props: {
   return (
     <FormControl>
       {label && <InputLabel id={`${name}-label`}>{label}</InputLabel>}
-      {h1 && <h1 className={`${lusitana.className} text-xl`}>{h1}</h1>}
+      {h1 && <h1 className={`text-xl`}>{h1}</h1>}
       <RadioGroup
         id={`${name}-label`}
         aria-labelledby={`${name}-label`}
@@ -60,13 +58,15 @@ export default function FormItemGroup(props: {
               control={
                 <Radio
                   sx={{
-                    color: "#87837e",
+                    color: "var(--data-color)",
                     "&.Mui-checked": {
-                      color: "#87837e",
+                      color: "var(--data-color)",
                     },
                   }}
                 />
               }
+              className="data-color:color-natural-gray-700"
+              data-color
             />
           );
         })}

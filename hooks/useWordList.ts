@@ -1,16 +1,17 @@
 import { useContext, useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
-import { WordPairsProp, LocalizationProps } from "@/lib/definitions";
+import { WordPairsProp } from "@/lib/definitions";
 
 import {
   DictionaryContext,
+  FormType,
   MAX_NUMBER_WORDS_TO_STUDY,
   MIN_NUMBER_WORDS_TO_STUDY,
 } from "@/store/dict-context";
 
 interface WordListProp {
-  localization?: LocalizationProps;
+  form: FormType;
   onGoToPracticeHandler: () => void;
   wordPairs: WordPairsProp[];
   selectedWordsQuantity: number;
@@ -68,7 +69,7 @@ export function useWordList(): WordListProp {
   const localization = form.localization?.[`${form.language}`];
 
   return {
-    localization: form.localization,
+    form,
     onGoToPracticeHandler,
     wordPairs,
     selectedWordsQuantity: selectedWords.length,

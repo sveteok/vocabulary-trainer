@@ -56,17 +56,19 @@ export default function InfoContainer(props: InfoContainerProps) {
     <div
       ref={buttonRef}
       key={`radio_group_option_content_${id}`}
-      className={`relative flex sitems-center justify-between p-4 rounded-md border-2 border-grey-500 mb-1 gap-4  cursor-pointer overflow-hidden
-                  data-[ripple-effect="disabled"]:cursor-auto        
-                  data-[state="error"]:bg-red-50
-                  data-[state="error"]:text-[#ff355e] 
-                  data-[state="error"]:border-[#ff355e] 
-                  data-[state="correct"]:bg-green-50 
-                  data-[state="correct"]:text-[#009966] 
-                  data-[state="correct"]:border-[#009966] 
-                  data-[state="info"]:bg-[#f8f7f5]
-                  data-[state="info"]:border-[#87837e] 
-                  data-[state="info"]:text-[#232a32]
+      className={`relative flex justify-between p-4 rounded-md 
+                border-2 border-natural-gray-100
+                bg-natural-gray-50
+                border-success
+                mb-1 gap-4  cursor-pointer overflow-hidden
+                data-[ripple-effect="disabled"]:cursor-auto     
+                data-[state="error"]:text-error
+                data-[state="error"]:border-error
+                data-[state="correct"]:text-success
+                data-[state="correct"]:border-success
+                data-[state="info"]:border-natural-gray-100
+                data-[state="info"]:text-natural-gray-900
+                focus:outline-natural-gray-50 outline-natural-gray-50
                   `}
       onClick={rippleEffectDisabled === true ? undefined : handleRippleEffect}
       data-state={infoState}
@@ -74,18 +76,18 @@ export default function InfoContainer(props: InfoContainerProps) {
     >
       <span
         ref={rippleRef}
-        className={`w-[60px] h-[60px] bg-gray-700  absolute rounded-full opacity-0`}
+        className={`w-[60px] h-[60px] bg-natural-gray-700  absolute rounded-full opacity-0`}
       ></span>
       {children}
       {infoState === InfoContainerStates.ERROR && (
         <CloseRoundedIcon
-          className="h-6 w-6 text-[#ff355e]"
+          className="h-6 w-6 text-error"
           key="radio_group_option_incorrect_icon"
         />
       )}
       {infoState === InfoContainerStates.CORRECT && (
         <DoneRoundedIcon
-          className="h-6 w-6 flex-end text-[#009966]"
+          className="h-6 w-6 flex-end text-success"
           key="radio_group_option_correct_icon"
         />
       )}

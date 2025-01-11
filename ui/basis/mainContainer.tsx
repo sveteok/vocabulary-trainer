@@ -16,7 +16,7 @@ export default function MainContainer({
     <>
       <main
         role="main"
-        className={`flex-1 flex flex-col items-stretch p-4 overflow-y-scroll gap-4 bg-[#dcd5cd] text-[#232a32] ${className}`}
+        className={`${className} flex-1 flex flex-col items-stretch p-4 overflow-y-scroll gap-4 `}
       >
         {children}
       </main>

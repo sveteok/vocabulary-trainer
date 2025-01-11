@@ -5,6 +5,7 @@ import { useFilteredList } from "@/hooks/useFilteredList";
 
 import SeachForm from "@/ui/basis/seachForm";
 import WordRow from "@/ui/list/wordRow";
+import { KeyboardEventHandler } from "react";
 
 const WordListAndSearchBar = ({
   list,
@@ -24,7 +25,7 @@ const WordListAndSearchBar = ({
 
   return (
     <>
-      <div className="static flex ">
+      <div className="static flex gap-2 items-center">
         <SeachForm
           placeholderText={localization?.filter_words}
           onUpdateFilterInputHandler={setSeachText}
@@ -32,21 +33,32 @@ const WordListAndSearchBar = ({
         />
         <Checkbox
           checked={isControlCheckboxChecked}
+          id="checkbox_all"
           value="all"
-          aria-label={`Select first ${maxNumToSelect} new words to study`}
-          {...{ inputProps: { "aria-label": "Checkbox demo" } }}
+          aria-label={`Select ${maxNumToSelect} new words to study`}
+          {...{ inputProps: { "aria-label": "Checkbox All" } }}
           onChange={(
             e: React.ChangeEvent<HTMLInputElement>,
             checked: boolean
           ) => {
             onChangeWordSelectState("all", checked);
           }}
+          onKeyUp={(e: React.KeyboardEvent<HTMLButtonElement>) => {
+            if (
+              e.key === "Enter" &&
+              document.activeElement?.id === "checkbox_all"
+            ) {
+              (document.activeElement as HTMLElement).click();
+            }
+          }}
           sx={{
-            color: "#87837e",
+            color: "var(--data-color)",
             "&.Mui-checked": {
-              color: "#87837e",
+              color: "var(--data-color)",
             },
           }}
+          className="data-color:color-natural-gray-700 w-10 h-10"
+          data-color
         />
       </div>
       <div

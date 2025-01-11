@@ -9,9 +9,10 @@ import {
   WordPairsProp,
   LocalizationProps,
   AllLocalizationCodeProps,
+  KeyValueObjectType,
 } from "@/lib/definitions";
 
-interface FormType {
+export interface FormType {
   languages: LanguagesProps[];
   localizedLanguages?: LanguagesProps[];
   categories: CategoryProps[];
@@ -124,14 +125,37 @@ function formReducer(state: FormType, action: ActionType): FormType {
       )?.name;
     }
 
-    let localization = state.localization;
+    if (!name) return state;
+
     if (payload.field_name === "language") {
-      localization = state.allLocalization[payload.id] as LocalizationProps;
+      const localization = state.allLocalization[
+        payload.id
+      ] as LocalizationProps;
+
+      const localizedLanguages = getLocalizedLanguages({
+        languages: state.languages,
+        language: payload.id,
+        localization: localization,
+      });
+
+      return {
+        ...state,
+        localization: localization,
+        language: payload.id,
+        language_name: name,
+        localizedLanguages: localizedLanguages,
+      };
+    } else if (payload.field_name === "translation_language") {
+      return {
+        ...state,
+        translation_language: payload.id,
+        translation_language_name:
+          state.localization?.[`${payload.id}`] || name,
+      };
     }
 
     return {
       ...state,
-      localization: localization,
       [payload.field_name]: payload.id,
       [`${payload.field_name}_name`]: name,
     };
@@ -198,6 +222,7 @@ const initDictData = ({
   return {
     ...initData,
     language: lang,
+    language_name: languages.find((el) => el.id === lang)?.name,
     languages,
     categories,
     allLocalization: allLocalization,
@@ -291,3 +316,37 @@ export default function DictionaryContextProvider({
     </DictionaryContext.Provider>
   );
 }
+
+export const getLocalizedLanguages = ({
+  languages,
+  language,
+  localization,
+}: {
+  languages: LanguagesProps[];
+  language: string;
+  localization: LocalizationProps;
+}): LanguagesProps[] => {
+  let localizedLanguages: KeyValueObjectType[] = [];
+  languages.map((el) => {
+    if (!language || el.id === language) return;
+
+    const lang = localization?.[`${el.id}`];
+    if (lang) {
+      localizedLanguages.push({ id: el.id, name: lang });
+    } else {
+      localizedLanguages.push(el);
+    }
+  });
+
+  localizedLanguages = localizedLanguages.sort(function (a, b) {
+    if (a.name < b.name) {
+      return -1;
+    }
+    if (a.name > b.name) {
+      return 1;
+    }
+    return 0;
+  });
+
+  return localizedLanguages;
+};

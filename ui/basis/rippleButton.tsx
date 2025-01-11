@@ -88,24 +88,27 @@ const RippleButton: React.FC<RippleButtonProps> = (props) => {
       onFocus={handleOnFocus}
       ref={buttonRef}
       disabled={disabled}
-      className={`relative overflow-hidden flex flex-1 justify-center items-center  p-2  gap-2
-       border-2 border-[#32302f] rounded-full 
-      bg-[#87837e] text-[#fff]
-      focus:pointer-events-auto
-      enabled:pointer-events-auto
-      pointer-events-none
-      hover:border-[#414f4d] hover:text-[#414f4d] hover:bg-[#d5cddc] hover:cursor-pointer
-      active:bg-[#87837e] active:text-[#fff]
-      disabled:bg-gray-300 disabled:opacity-25
-      outline-none
-      focus:ring-1 focus:outline-blue-700
-      `}
+      className={`relative overflow-hidden flex flex-1 justify-center items-center
+                  border-2 border-natural-gray-100 rounded-full 
+                  bg-natural-gray-900 text-natural-gray-50
+                  hover:border-natural-gray-100
+                  hover:text-white
+                  hover:bg-natural-gray-600
+                  hover:cursor-pointer
+                  disabled:opacity-25
+                  outline-none
+                  enabled:pointer-events-auto
+                  pointer-events-none
+                  focus:pointer-events-auto focus:ring-current focus:outline-natural-gray-50
+                `}
     >
       <span
         ref={rippleRef}
         className={`w-[60px] h-[60px] overflow-hidden bg-[rgba(223,229,228,0.01)]  absolute rounded-full opacity-0`}
       ></span>
-      <div className="hover: cursor-pointer">{children}</div>
+      <div className="flex hover:cursor-pointer gap-2 items-center p-4">
+        {children}
+      </div>
     </button>
   );
 };

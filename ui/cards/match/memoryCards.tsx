@@ -15,36 +15,22 @@ export const MemoryCards = () => {
   const dictContext = useContext(DictionaryContext);
   const { form } = dictContext;
 
-  const {
-    data,
-    isGameDone,
-    onCardClickHandler,
-    onResetHandler,
-    restartButtonRef,
-    total,
-    remaining,
-    correct,
-  } = useMatchCard({ wordPairs: form.wordPairs });
+  const { data, isGameDone, onCardClickHandler, onResetHandler } = useMatchCard(
+    { wordPairs: form.wordPairs }
+  );
 
   return (
     <>
       <SubMenu>
         <ProgressBar
-          total={total}
-          remaining={remaining}
-          correct={correct}
+          total={data.total}
+          remaining={data.remaining}
           restart={onResetHandler}
-          restartButtonRef={restartButtonRef}
-          localization={{
-            ...form.localization,
-            correct: form.localization?.learnt || "Learnt",
-          }}
+          showBackButton={true}
+          pageName="Match Game"
         />
       </SubMenu>
-      <section
-        aria-label="match cards"
-        className="flex flex-1 p-5 size-full bg-[#dcd5cd]"
-      >
+      <section aria-label="match cards" className="flex flex-1 p-5 size-full ">
         {isGameDone ? (
           <GameOver />
         ) : (

@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import tailwindColors from "tailwindcss/colors";
 
 export default {
   content: [
@@ -12,7 +13,24 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        "natural-gray": {
+          "50": "#f6f5f5",
+          "100": "#e7e6e6",
+          "200": "#d2d0cf",
+          "300": "#b3b1ad",
+          "400": "#87837e",
+          "500": "#716d69",
+          "600": "#615e59",
+          "700": "#52504c",
+          "800": "#474643",
+          "900": "#3e3d3b",
+          "950": "#272625",
+        },
+        success: tailwindColors.teal[500],
+        info: tailwindColors.cyan[500],
+        error: tailwindColors.red[500],
       },
+      
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":

@@ -3,14 +3,14 @@
 import NavigateNextRoundedIcon from "@mui/icons-material/NavigateNextRounded";
 
 import { useWordList } from "@/hooks/useWordList";
-
+import SubMenu from "@/ui/basis/subMenu";
+import { LoadingSkeleton } from "@/ui/basis/loadingSkeleton";
 import MainContainer from "@/ui/basis/mainContainer";
 import WordListAndSearchBar from "@/ui/list/wordListAndSearchBar";
-import SubMenu from "@/ui/basis/subMenu";
 
 export default function WordList() {
   const {
-    localization,
+    form,
     onGoToPracticeHandler,
     wordPairs,
     selectedWordsQuantity,
@@ -22,16 +22,22 @@ export default function WordList() {
   return (
     <>
       <SubMenu>
-        <div className="pl-3">
-          {(localization?.select_words_to_study || "Select words to study") +
-            ` (${selectedWordsQuantity}/${maxNumToSelect}) ...`}
-        </div>
+        {form.language &&
+        form.translation_language &&
+        form.localization?.select_words_to_study ? (
+          `${form.localization?.select_words_to_study} (${selectedWordsQuantity}/${maxNumToSelect}) ...`
+        ) : (
+          <LoadingSkeleton />
+        )}
       </SubMenu>
 
       <MainContainer
         actions={[
           {
-            label: localization?.go_to_practice || "Go to practice",
+            label:
+              form.language && form.translation_language
+                ? form.localization?.go_to_practice || ""
+                : "",
             icon: <NavigateNextRoundedIcon />,
             id: "menu",
             disabled: isNextBtnDisabled,
@@ -51,7 +57,7 @@ export default function WordList() {
             isControlCheckboxChecked={
               selectedWordsQuantity === maxNumToSelect ? true : false
             }
-            localization={localization}
+            localization={form.localization}
           />
         </div>
       </MainContainer>

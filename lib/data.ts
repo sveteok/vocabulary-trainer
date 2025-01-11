@@ -65,7 +65,7 @@ export async function fetchAllLanguages(): Promise<LanguagesProps[]> {
   }
 }
 
-interface GetInitDataProps {
+export interface GetInitDataProps {
   languages: LanguagesProps[];
   localization: AllLocalizationCodeProps;
   categories: CategoryProps[];

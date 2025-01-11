@@ -1,23 +1,12 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+
 import "./globals.css";
-import { notFound } from "next/navigation";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-import SiteNavigation from "@/ui/basis/siteNavigation";
 
 import { getInitData } from "@/lib/data";
-
-import DictionaryContextProvider from "@/store/dict-context";
+import { MainWrapper } from "@/ui/basis/mainWrapper";
+import { LoadingSkeleton } from "@/ui/basis/loadingSkeleton";
+import { geistMono, geistSans, nunito } from "@/ui/fonts";
 
 export const metadata: Metadata = {
   title: {
@@ -37,31 +26,30 @@ export default async function RootLayout({
 }>) {
   const { languages, localization, categories } = await getInitData();
 
-  if (!languages || !localization || !categories) {
-    return notFound();
-  }
-
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <meta
           name="viewport"
-          content="width=device-width"
+          content="width=device-width, interactive-widget=resizes-content"
           id="viewportMeta"
         ></meta>
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${nunito.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="h-svh lg:max-w-[700px] m-auto flex flex-col bg-[#dcd5cd] text-[#232a32]">
-          <DictionaryContextProvider
-            categories={categories}
-            languages={languages}
-            localization={localization}
-          >
-            <SiteNavigation />
-            {children}
-          </DictionaryContextProvider>
+        <div
+          className={`h-svh lg:max-w-[700px] m-auto flex flex-col bg-natural-gray-200 text-natural-gray-800 `}
+        >
+          <Suspense fallback={<LoadingSkeleton />}>
+            <MainWrapper
+              languages={languages}
+              categories={categories}
+              localization={localization}
+            >
+              {children}
+            </MainWrapper>
+          </Suspense>
         </div>
       </body>
     </html>

@@ -10,6 +10,7 @@ import { DictionaryContext } from "@/store/dict-context";
 import FormItemGroup from "@/ui/basis/formItemGroup";
 import MainContainer from "@/ui/basis/mainContainer";
 import SubMenu from "@/ui/basis/subMenu";
+import { LoadingSkeleton } from "@/ui/basis/loadingSkeleton";
 
 export default function Category({
   localizedCategories,
@@ -31,20 +32,23 @@ export default function Category({
     feedLocalizedCategories(localizedCategories);
   }, [form.category]);
 
-  //const localization = form.localization?.[`${form.language}`];
-
-  const chooseCategoryText =
-    (form.localization?.choose_category || "Choose category") + "...";
-
   return (
     <>
       <SubMenu>
-        <div className="pl-3">{chooseCategoryText}</div>
+        <div className="pl-3">
+          {(form.language &&
+            form.translation_language &&
+            form.localization?.choose_category + "...") || <LoadingSkeleton />}
+        </div>
       </SubMenu>
       <MainContainer
         actions={[
           {
-            label: form.localization?.next_page || "Next",
+            label:
+              (form.language &&
+                form.translation_language &&
+                form.localization?.next_page) ||
+              "",
             icon: <NavigateNextRoundedIcon />,
             id: "next",
           },
@@ -57,7 +61,9 @@ export default function Category({
             );
         }}
       >
-        <section aria-label={chooseCategoryText}>
+        <section
+          aria-label={form.localization?.choose_category || "Choose category"}
+        >
           <FormItemGroup
             name="category"
             items={categories}
