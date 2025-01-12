@@ -150,11 +150,9 @@ const CategoryContent = ({
           className={`${linkClassName}  ${focusClassName} text-xs `}
           href={`/${language}/${translation_language}/${category}`}
         >
-          {`${selectedWordsQuantity} ${
-            selectedWordsQuantity === 1
-              ? form.localization?.word_abbrev || ""
-              : form.localization?.word_abbrev_plural || ""
-          }`}
+          {`${
+            form.localization?.number_of_words || "Number of words"
+          }: ${selectedWordsQuantity} `}
         </Link>
       </div>
     );

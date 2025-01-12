@@ -3609,6 +3609,67 @@ export const localization = [
   { language_code: "hi", key: "word_abbrev_plural", text: "श" },
   { language_code: "hi", key: "word_abbrev", text: "श" },
   { language_code: "hi", key: "ready", text: "तैयार" },
+
+  {
+    language_code: "en",
+    key: "number_of_words",
+    text: "Number of words",
+  },
+  {
+    language_code: "fi",
+    key: "number_of_words",
+    text: "Sanojen määrä",
+  },
+  {
+    language_code: "ru",
+    key: "number_of_words",
+    text: "Количество слов",
+  },
+  {
+    language_code: "es",
+    key: "number_of_words",
+    text: "Número de palabras",
+  },
+  {
+    language_code: "fr",
+    key: "number_of_words",
+    text: "Nombre de mots",
+  },
+  {
+    language_code: "de",
+    key: "number_of_words",
+    text: "Anzahl der Wörter",
+  },
+  {
+    language_code: "zh",
+    key: "number_of_words",
+    text: "单词数量",
+  },
+  {
+    language_code: "ja",
+    key: "number_of_words",
+    text: "単語数",
+  },
+  {
+    language_code: "ko",
+    key: "number_of_words",
+    text: "단어 수",
+  },
+  {
+    language_code: "ar",
+    key: "number_of_words",
+    text: "عدد الكلمات",
+  },
+  {
+    language_code: "pt",
+    key: "number_of_words",
+    text: "Número de palavras",
+  },
+  {
+    language_code: "hi",
+    key: "number_of_words",
+    text: "शब्दों की संख्या",
+  },
 ];
 
 export const wordPairs_en_hi_basic = [
