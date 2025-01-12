@@ -39,7 +39,8 @@ export const CardSlideShow = () => {
           remaining={pageCount === 0 ? 0 : pageCount - wordCardsState.page - 1}
           restart={restartHandler}
           showBackButton={true}
-          pageName="View Cards"
+          pageName={form.localization?.flashcards || "Flashcards"}
+          localization={form.localization}
         />
       </SubMenu>
 

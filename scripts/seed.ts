@@ -434,12 +434,12 @@ async function seedCategoryWordPairs({
 }
 
 async function main() {
-  // await seedLanguages();
-  // await seedCategories();
-  // await seedCategoryTranslations();
+  await seedLanguages();
+  await seedCategories();
+  await seedCategoryTranslations();
   await seedWords();
-  // await seedWordPairs();
-  // await seedLocalization();
+  await seedWordPairs();
+  await seedLocalization();
 
   /** category: id: "5a7f36b6-7c4e-4cf6-930b-bf7f4d7b6347", name: "Basic Phrases"*/
   await seedCategoryWordPairs({

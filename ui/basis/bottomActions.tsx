@@ -30,7 +30,9 @@ export default function bottomActions({
           handleOnClcik={handleOnChange}
         >
           {action.icon}
-          <label className="hover:cursor-pointer">{action.label}</label>
+          <label className="hover:cursor-pointer hidden md:block">
+            {action.label}
+          </label>
         </RippleButton>
       ))}
     </footer>

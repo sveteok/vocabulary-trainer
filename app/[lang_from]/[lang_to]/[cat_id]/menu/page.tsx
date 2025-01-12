@@ -17,19 +17,19 @@ export default function MenuPage() {
     <div className="flex flex-1">
       <nav className="grid grid-cols-2 justify-items-center float-start row-span-0 flex-1 gap-2 items-center m-0 ">
         <MenuButton
-          label={form.localization?.cards || "Cards"}
+          label={form.localization?.flashcards || "Flashcards"}
           onClick={() => router.push(`${pathname}/../cards`)}
         />
         <MenuButton
-          label={form.localization?.match || "Match"}
+          label={form.localization?.memory_match || "Memory match"}
           onClick={() => router.push(`${pathname}/../match`)}
         />
         <MenuButton
-          label={form.localization?.quize || "Quize"}
+          label={form.localization?.quiz || "Quiz"}
           onClick={() => router.push(`${pathname}/../quize`)}
         />
         <MenuButton
-          label={form.localization?.write || "Write"}
+          label={form.localization?.writing || "Writing"}
           onClick={() => router.push(`${pathname}/../write`)}
         />
       </nav>

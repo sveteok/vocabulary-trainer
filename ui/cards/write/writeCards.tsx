@@ -39,7 +39,8 @@ export const WriteCards = () => {
           remaining={remaining}
           restart={onResetHandler}
           showBackButton={true}
-          pageName="Training mode"
+          pageName={form.localization?.writing || "Writing"}
+          localization={form.localization}
         />
       </SubMenu>
       <MainContainer

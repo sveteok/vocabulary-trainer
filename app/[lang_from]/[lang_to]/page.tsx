@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import Category from "@/ui/basis/category";
 
 import { fetchAllCategories } from "@/lib/data";
+import { LoadingSkeleton } from "@/ui/basis/loadingSkeleton";
 
 export default async function CategoryListPage({
   params,
@@ -26,7 +27,7 @@ export default async function CategoryListPage({
   }
 
   return (
-    <Suspense fallback={<p>Loading...</p>}>
+    <Suspense fallback={<LoadingSkeleton />}>
       <Category localizedCategories={localizedCategories} />
     </Suspense>
   );

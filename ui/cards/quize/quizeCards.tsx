@@ -44,7 +44,8 @@ export const QuizeCards = () => {
           remaining={remaining}
           restart={onResetHandler}
           showBackButton={true}
-          pageName="Quize Game"
+          pageName={form.localization?.quiz || "Quiz"}
+          localization={form.localization}
         />
       </SubMenu>
 

@@ -27,7 +27,8 @@ export const MemoryCards = () => {
           remaining={data.remaining}
           restart={onResetHandler}
           showBackButton={true}
-          pageName="Match Game"
+          pageName={`${form.localization?.memory_match || "Memory match"}`}
+          localization={form.localization}
         />
       </SubMenu>
       <section aria-label="match cards" className="flex flex-1 p-5 size-full ">

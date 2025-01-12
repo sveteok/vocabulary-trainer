@@ -151,7 +151,9 @@ const CategoryContent = ({
           href={`/${language}/${translation_language}/${category}`}
         >
           {`${selectedWordsQuantity} ${
-            selectedWordsQuantity === 1 ? "word" : "words"
+            selectedWordsQuantity === 1
+              ? form.localization?.word_abbrev || ""
+              : form.localization?.word_abbrev_plural || ""
           }`}
         </Link>
       </div>
