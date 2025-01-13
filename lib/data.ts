@@ -139,7 +139,7 @@ export async function getWordPairs(
   try {
     if (queryProp.language === "en") {
       const wordPairs = await sql<WordPairsProp>`
-        SELECT wp.id, wp.word_id, wp.translated_word_id, 
+        SELECT w.id, wp.word_id, wp.translated_word_id, 
         w.translated_name AS word_name,
         tw.translated_name  AS translated_word_name,
         w.description AS word_desc,
@@ -156,7 +156,7 @@ export async function getWordPairs(
       return wordPairs.rows;
     } else if (queryProp.translation_language === "en") {
       const wordPairs = await sql<WordPairsProp>` 
-          SELECT wp.id, wp.word_id AS translated_word_id, wp.translated_word_id AS word_id, 
+          SELECT w.id, wp.word_id AS translated_word_id, wp.translated_word_id AS word_id, 
           w.translated_name AS translated_word_name,
           tw.translated_name  AS word_name,
           w.description AS translated_word_desc,
