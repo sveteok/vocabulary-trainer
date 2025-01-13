@@ -10,20 +10,14 @@ import { useTranslatedLanguage } from "@/hooks/useTranslatedLanguage";
 import { LoadingSkeleton } from "@/ui/basis/loadingSkeleton";
 
 export default function LangToPage() {
-  const {
-    localization,
-    localizedLanguages,
-    lang_to,
-    onNextPageHandler,
-    updateDataById,
-  } = useTranslatedLanguage();
+  const { form, onNextPageHandler, updateDataById } = useTranslatedLanguage();
 
   return (
     <>
       <SubMenu>
         <div className="pl-3">
-          {lang_to && localization.select_language ? (
-            localization?.select_language + "..."
+          {form.language && form.localization.select_language ? (
+            form.localization?.select_language + "..."
           ) : (
             <LoadingSkeleton />
           )}
@@ -33,10 +27,10 @@ export default function LangToPage() {
       <MainContainer
         actions={[
           {
-            label: (lang_to && localization.next_page) || "",
+            label: (form.language && form.localization.next_page) || "",
             icon: <NavigateNextRoundedIcon />,
             id: "next",
-            disabled: !lang_to,
+            disabled: !form.language,
           },
         ]}
         value="next"
@@ -45,9 +39,9 @@ export default function LangToPage() {
         <section aria-label="Select Language">
           <FormItemGroup
             name="translation_language"
-            items={localizedLanguages}
+            items={form.localizedLanguages}
             noItemsMessage="No languages"
-            value={lang_to}
+            value={form.translation_language}
             handleChange={updateDataById}
           />
         </section>

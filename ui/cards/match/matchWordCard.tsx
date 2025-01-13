@@ -108,6 +108,7 @@ const MatchWordCard = (props: MatchWordProp) => {
       }
       className={`
         flex justify-center border-2 justify-items-stretch text-center place-items-center align-middle p-2 size-full rounded-lg font-semibold md:text-xl data-[cursor='pointer']:cursor-pointer data-[cursor='not-allowed']:cursor-not-allowed 
+        
         ${
           animate_mode !== "card_face_selected"
             ? ""
@@ -139,7 +140,9 @@ const MatchWordCard = (props: MatchWordProp) => {
         }
       }}
     >
-      {translated_name}
+      <div className=" text-ellipsis text-nowrap overflow-hidden">
+        {translated_name}{" "}
+      </div>
       {result === CardResultTypes.CORRECT && (
         <DoneRoundedIcon className=" h-6 w-6 text-success" />
       )}

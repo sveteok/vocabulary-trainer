@@ -14,7 +14,11 @@ export default function SiteNavigation() {
   return (
     <nav
       role="navigation"
-      className="flex flex-col p-4 gap-2 bg-natural-gray-600 text-natural-gray-50 min-h-[70px]"
+      className="flex flex-col p-4 gap-2 bg-natural-gray-600 text-natural-gray-50 
+      
+      data-[category=false]:min-h-[70px]
+      data-[category=true]:min-h-[107px]"
+      data-category={category !== undefined}
     >
       <div
         className="flex flex-row justify-center text-xs gap-2

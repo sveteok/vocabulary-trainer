@@ -17,7 +17,7 @@ export default function LangFromPage() {
   const { form, updateDataById } = dictContext;
 
   useEffect(() => {
-    if (!form.language) updateDataById("language", "en");
+    if (!form.language) updateDataById("language", form.languages[0].id);
   }, [form.language, updateDataById]);
 
   return (

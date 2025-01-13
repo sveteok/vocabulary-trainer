@@ -76,9 +76,12 @@ export const MainWrapper = ({
 
   return (
     <DictionaryContextProvider
-      categories={categories}
-      languages={languages}
-      localization={localization}
+      categories={data.categories}
+      languages={data.languages}
+      localization={data.localization}
+      language={language}
+      translation_language={translation_language}
+      category={category}
     >
       <SiteNavigation />
       {children}

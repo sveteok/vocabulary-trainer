@@ -36,7 +36,7 @@ export default async function RootLayout({
         ></meta>
       </head>
       <body
-        className={`${nunito.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${nunito.variable} ${geistSans.variable} ${geistMono.variable} antialiased `}
       >
         <div
           className={`h-svh lg:max-w-[700px] m-auto flex flex-col bg-natural-gray-200 text-natural-gray-800 `}

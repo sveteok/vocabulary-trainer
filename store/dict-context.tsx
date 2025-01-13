@@ -226,12 +226,26 @@ const initDictData = ({
   languages,
   categories,
   allLocalization,
+  language,
+  translation_language,
+  category,
 }: {
   languages: LanguagesProps[];
   categories: CategoryProps[];
   allLocalization: AllLocalizationCodeProps;
+  language?: string;
+  translation_language?: string;
+  category?: string;
 }): FormType => {
-  const lang = languages[0].id;
+  const lang = language || languages[0].id;
+  const localization = allLocalization[lang] as LocalizationProps;
+
+  const localizedLanguages = getLocalizedLanguages({
+    languages: languages,
+    language: lang,
+    localization: localization,
+  });
+
   return {
     ...initData,
     language: lang,
@@ -239,7 +253,12 @@ const initDictData = ({
     languages,
     categories,
     allLocalization: allLocalization,
-    localization: allLocalization[lang] as LocalizationProps,
+    localization: localization,
+    localizedLanguages: localizedLanguages,
+    translation_language: translation_language,
+    translation_language_name:
+      translation_language && localization?.[`${translation_language}`],
+    category: category,
   };
 };
 
@@ -248,15 +267,28 @@ export default function DictionaryContextProvider({
   languages,
   categories,
   localization,
+  language,
+  translation_language,
+  category,
 }: {
   children: React.ReactNode;
   languages: LanguagesProps[];
   categories: CategoryProps[];
   localization: AllLocalizationCodeProps;
+  language?: string;
+  translation_language?: string;
+  category?: string;
 }) {
   const [form, formDispatch] = useReducer(
     formReducer,
-    initDictData({ languages, categories, allLocalization: localization })
+    initDictData({
+      languages,
+      categories,
+      allLocalization: localization,
+      language,
+      translation_language,
+      category,
+    })
   );
 
   const updateDataById = (field_name: string, id: string, name?: string) => {
