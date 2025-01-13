@@ -66,8 +66,6 @@ export function useWordList(): WordListProp {
 
   const onGoToPracticeHandler = () => router.push(`${pathname}/menu`);
 
-  const localization = form.localization?.[`${form.language}`];
-
   return {
     form,
     onGoToPracticeHandler,

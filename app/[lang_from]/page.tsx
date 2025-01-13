@@ -36,6 +36,7 @@ export default function LangToPage() {
             label: (lang_to && localization.next_page) || "",
             icon: <NavigateNextRoundedIcon />,
             id: "next",
+            disabled: !lang_to,
           },
         ]}
         value="next"

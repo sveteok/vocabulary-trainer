@@ -152,6 +152,19 @@ function formReducer(state: FormType, action: ActionType): FormType {
         translation_language_name:
           state.localization?.[`${payload.id}`] || name,
       };
+    } else if (payload.field_name === "category") {
+      return {
+        ...state,
+        category: payload.id,
+        category_name:
+          (state.language &&
+            state.translation_language &&
+            state.localizedCategories?.find(
+              (el) =>
+                el.id === payload.id && el.language_code === state.language
+            )?.name) ||
+          name,
+      };
     }
 
     return {

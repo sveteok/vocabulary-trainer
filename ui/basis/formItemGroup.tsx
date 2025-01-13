@@ -44,8 +44,7 @@ export default function FormItemGroup(props: {
         id={`${name}-label`}
         aria-labelledby={`${name}-label`}
         name={name}
-        defaultValue={value || items?.[0].id}
-        value={value || items?.[0].id}
+        value={value || items?.[0].id || ""}
         onChange={handleOnChange}
       >
         {items?.map((item: KeyValueObjectType) => {

@@ -143,7 +143,7 @@ const CategoryContent = ({
           className={`${linkClassName} ${focusClassName} font-bold text-lg`}
           href={`/${form.language}/${form.translation_language}/`}
         >
-          {category_name}
+          {category_name || <LoadingSkeleton />}
         </Link>
 
         <Link

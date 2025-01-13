@@ -12,7 +12,7 @@ import {
 interface TranslatedLanguageDataProp {
   localization: LocalizationProps;
   localizedLanguages: LanguagesProps[];
-  lang_to: string;
+  lang_to: string | undefined;
   onNextPageHandler: () => void;
   updateDataById: (field_name: string, id: string, name?: string) => void;
 }
@@ -29,17 +29,16 @@ export function useTranslatedLanguage(): TranslatedLanguageDataProp {
     localization: form.localization,
   });
 
-  const value = form.translation_language || localizedLanguages?.[0].id || "fi";
-
   useEffect(() => {
-    if (!form.translation_language)
-      updateDataById("translation_language", value);
-  }, [updateDataById, value]);
+    if (!form.translation_language) {
+      updateDataById("category", form.localizedLanguages?.[0].id || "");
+    }
+  }, []);
 
   return {
     localization: form.localization,
     localizedLanguages,
-    lang_to: value,
+    lang_to: form.translation_language,
     updateDataById,
     onNextPageHandler: () => {
       if (form.language)
