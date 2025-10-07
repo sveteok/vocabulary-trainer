@@ -62,7 +62,7 @@ const WordListAndSearchBar = ({
         />
       </div>
       <div
-        className={`flex-1 flex flex-col items-stretch mt-4 overflow-y-scroll gap-0`}
+        className={`flex-1 flex flex-col items-stretch mt-4 gap-0`}
       >
         <div className="grid grid-cols-1 gap-1">
           {filteredList.map((item, i) => (
