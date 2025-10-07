@@ -48,7 +48,7 @@ export default function WordList() {
         className=""
       >
         <div
-          className={`flex-1 flex flex-col items-stretch p-0 overflow-y-scroll gap-0`}
+          className={`flex-1 flex flex-col items-stretch p-0 gap-0`}
         >
           <WordListAndSearchBar
             list={wordPairs}
