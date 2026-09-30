@@ -1,13 +1,15 @@
 import type { Config } from "tailwindcss";
-import tailwindColors from "tailwindcss/colors";
 
 export default {
-  content: [
-    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./app/**/*.{js,ts,jsx,tsx,mdx}",
-    "./ui/**/*.{js,ts,jsx,tsx,mdx}",
-  ],
+  content: {
+    relative: true,
+    files: [
+      "./pages/**/*.{js,ts,jsx,tsx,mdx}",
+      "./components/**/*.{js,ts,jsx,tsx,mdx}",
+      "./app/**/*.{js,ts,jsx,tsx,mdx}",
+      "./ui/**/*.{js,ts,jsx,tsx,mdx}",
+    ],
+  },
   theme: {
     extend: {
       colors: {
@@ -26,9 +28,9 @@ export default {
           "900": "#3e3d3b",
           "950": "#272625",
         },
-        success: tailwindColors.teal[500],
-        info: tailwindColors.cyan[500],
-        error: tailwindColors.red[500],
+        success: "#14b8a6",
+        info: "#06b6d4",
+        error: "#ef4444",
       },
       
       backgroundImage: {
