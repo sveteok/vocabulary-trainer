@@ -2,20 +2,20 @@ import { useCallback, useState, useEffect } from "react";
 import { WordPairsProp, KeyValueObjectType } from "@/lib/definitions";
 import { shuffleObjects } from "@/lib/utils";
 
-export interface QuizeCardProp {
+export interface QuizCardProp {
   word: WordPairsProp;
   answers: KeyValueObjectType[];
   selectedWordId?: string;
 }
 
-interface QuizeCardDataProp {
+interface QuizCardDataProp {
   wordPairs: WordPairsProp[];
   usedWords: string[];
-  wordCard?: QuizeCardProp;
+  wordCard?: QuizCardProp;
 }
 
-interface QuizeCardDataType {
-  wordCard: QuizeCardProp | undefined;
+interface QuizCardDataType {
+  wordCard: QuizCardProp | undefined;
   getNextCardHandler: (needReset: boolean) => void;
   onSelectAnswerHandler?: (value: string) => void;
   onResetHandler: () => void;
@@ -25,12 +25,12 @@ interface QuizeCardDataType {
   remaining: number;
 }
 
-export function useQuizeCard({
+export function useQuizCard({
   wordPairs,
 }: {
   wordPairs?: WordPairsProp[];
-}): QuizeCardDataType {
-  const [data, setData] = useState<QuizeCardDataProp>(
+}): QuizCardDataType {
+  const [data, setData] = useState<QuizCardDataProp>(
     initializeQuizCard(wordPairs)
   );
 
@@ -53,11 +53,11 @@ export function useQuizeCard({
       const wordTranslation = allWordPairs[randomNumber];
 
       const getDistractors = (): KeyValueObjectType[] => {
-        let randomWords = state.wordPairs.filter(
+        const randomWords = state.wordPairs.filter(
           (w) => w.translated_word_id !== wordTranslation?.translated_word_id
         );
 
-        let distractors = [];
+        const distractors: KeyValueObjectType[] = [];
         for (let i = 0; i < 3; i++) {
           const randomIndex = Math.floor(Math.random() * randomWords.length);
 
@@ -83,7 +83,7 @@ export function useQuizeCard({
 
       answers = shuffleObjects(answers) as KeyValueObjectType[];
 
-      const currCard: QuizeCardProp = {
+      const currCard: QuizCardProp = {
         word: wordTranslation,
         answers: answers,
       };
@@ -106,7 +106,7 @@ export function useQuizeCard({
     setData((state) => {
       if (!state.wordCard) return state;
 
-      let currState = {
+      const currState = {
         ...state.wordCard,
         selectedWordId: value,
       };
@@ -157,6 +157,6 @@ function initializeQuizCard(wordPairs?: WordPairsProp[]) {
   return {
     wordPairs: wordPairs || [],
     usedWords: [],
-    wordCar: undefined,
-  } as QuizeCardDataProp;
+    wordCard: undefined,
+  } as QuizCardDataProp;
 }

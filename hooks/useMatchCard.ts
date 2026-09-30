@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, useRef, RefObject } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { WordPairsProp } from "@/lib/definitions";
 import { shuffleObjects } from "@/lib/utils";
 
@@ -105,7 +105,7 @@ export function useMatchCard({
         currentPlayingBlock = { ...currState.currentPlayingBlock };
       }
 
-      let { empty, learnt }: { empty: number[]; learnt: number[] } =
+      const { empty, learnt }: { empty: number[]; learnt: number[] } =
         getAllUnusedIndexes(currentPlayingBlock?.words || []);
 
       if (empty.length + learnt.length < BLOCK_WORD_NUMBER) {
@@ -126,12 +126,12 @@ export function useMatchCard({
       }
 
       const blockId = currentPlayingBlock?.blockId + 1;
-      let block: MatchCardProp[] = playingBlocks[blockId] as MatchCardProp[];
+      const block: MatchCardProp[] = playingBlocks[blockId] as MatchCardProp[];
 
       if (!block) return currState;
 
-      let words: MatchWordProp[] = [];
-      let translatedWords: MatchWordProp[] = [];
+      const words: MatchWordProp[] = [];
+      const translatedWords: MatchWordProp[] = [];
       block.map((b, i) => {
         words.push({
           id: b.card.word_id,
@@ -164,9 +164,7 @@ export function useMatchCard({
   }, []);
 
   useEffect(() => {
-    let timeoutId: ReturnType<typeof setTimeout>;
-
-    timeoutId = setTimeout(() => {
+    const timeoutId = setTimeout(() => {
       getNextCardHandler(false);
     }, 1000);
 
@@ -181,7 +179,7 @@ export function useMatchCard({
         let remaining = state.remaining;
         let usedWords = state.usedWords;
         let playingBlocks = state.playingBlocks;
-        let currentPlayingBlock = { ...state.currentPlayingBlock };
+        const currentPlayingBlock = { ...state.currentPlayingBlock };
 
         let currentCard = currentPlayingBlock.currentWord;
         let currentTranslatedCard = currentPlayingBlock.currentTranslatedWord;
@@ -232,7 +230,7 @@ export function useMatchCard({
           currentWordId &&
           currentTranslatedWordId
         ) {
-          words = words.map((w: MatchWordProp | undefined, i: number) => {
+          words = words.map((w: MatchWordProp | undefined) => {
             if (w && w.index === wordIndex && correctCardId === null) {
               if (w.translatedWordId === currentTranslatedWordId) {
                 correctCardId = w.card_id;
@@ -253,7 +251,7 @@ export function useMatchCard({
           currentTranslatedWordId
         ) {
           translatedWords = translatedWords.map(
-            (w: MatchWordProp | undefined, i: number) => {
+            (w: MatchWordProp | undefined) => {
               if (w && w.index === translatedWordIndex) {
                 if (w.translatedWordId === currentWordId) {
                   w.result = CardResultTypes.CORRECT;
@@ -372,7 +370,7 @@ function initializeMatchCard(wordPairs?: WordPairsProp[]) {
 }
 
 const generatePlayingCards = (words: WordPairsProp[]) => {
-  let playingCards: MatchCardProp[] = [];
+  const playingCards: MatchCardProp[] = [];
 
   const numberNewCard = Math.ceil((words.length * 2) / 10) * 10;
 
@@ -414,9 +412,9 @@ const getAllUnusedIndexes = (
 const generatePlayingBlocks = (
   playingCards: MatchCardProp[]
 ): PlayingBlocksProp => {
-  let playingBlocks: PlayingBlocksProp = {};
-  let cards = playingCards;
-  let len = Math.ceil(cards.length / BLOCK_WORD_NUMBER);
+  const playingBlocks: PlayingBlocksProp = {};
+  const cards = playingCards;
+  const len = Math.ceil(cards.length / BLOCK_WORD_NUMBER);
   playingBlocks["length"] = len;
   for (let i = 0; i < len; i++) {
     playingBlocks[i] = cards.slice(

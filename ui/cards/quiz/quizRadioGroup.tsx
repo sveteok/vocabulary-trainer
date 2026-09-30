@@ -20,13 +20,15 @@ type RadioGroupProps = {
   isNextBtnDisabled?: boolean;
 };
 
-export default function QuizeRadioGroup(props: RadioGroupProps) {
+const noopSelect = () => {};
+
+export default function QuizRadioGroup(props: RadioGroupProps) {
   const {
     name,
     options,
     correctAnswerId,
     value,
-    onSelect = (value: string) => {},
+    onSelect = noopSelect,
     headText,
     isNextBtnDisabled,
   } = props;
@@ -38,10 +40,8 @@ export default function QuizeRadioGroup(props: RadioGroupProps) {
     null
   );
 
-  useKeyDown(
-    (e: KeyboardEvent) => {
-      if (onSelect === undefined) return;
-
+  useEffect(() => {
+    const handleKeyUp = (e: KeyboardEvent) => {
       if (
         (e.key === "Enter" || e.code === "Space") &&
         focusedElement !== null
@@ -49,11 +49,16 @@ export default function QuizeRadioGroup(props: RadioGroupProps) {
         focusedElement.click();
       } else if (["1", "2", "3", "4"].includes(e.key)) {
         const option: RadioGroupType = groupOptions[parseInt(e.key) - 1];
-        onSelect(option.id);
+        if (option) onSelect(option.id);
       }
-    },
-    [groupOptions, focusedElement]
-  );
+    };
+
+    document.addEventListener("keyup", handleKeyUp);
+
+    return () => {
+      document.removeEventListener("keyup", handleKeyUp);
+    };
+  }, [focusedElement, groupOptions, onSelect]);
 
   useEffect(() => {
     setGroupOptions(fillGroupOptions(options));
@@ -70,7 +75,7 @@ export default function QuizeRadioGroup(props: RadioGroupProps) {
       {groupOptions.map((option, index) => (
         <div key={`${option.id}`} id={`toggle_button_${option.id}`}>
           <input
-            name="quize_radio_group"
+            name="quiz_radio_group"
             key={`radio_group_option_${option.id}`}
             type="radio"
             id={`radio_group_option_${option.id}`}
@@ -115,21 +120,8 @@ export default function QuizeRadioGroup(props: RadioGroupProps) {
 const fillGroupOptions = (data?: RadioGroupType[]) => {
   const options = data ? [...data] : [];
   const length = data ? 4 - data.length : 4;
-  for (var i = 0; i < length; i++) {
+  for (let i = 0; i < length; i++) {
     options.push({ id: `o_${i}`, name: "\u00A0" });
   }
   return options;
-};
-
-const useKeyDown = (
-  handler: (this: Document, ev: KeyboardEvent) => void,
-  deps: any[] = []
-) => {
-  useEffect(() => {
-    document.addEventListener("keyup", handler);
-
-    return () => {
-      document.removeEventListener("keyup", handler);
-    };
-  }, deps);
 };

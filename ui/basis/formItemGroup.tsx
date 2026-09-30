@@ -22,7 +22,7 @@ export default function FormItemGroup(props: {
     items,
     value,
     noItemsMessage = "No Items",
-    handleChange = (field_name: string, value: string, label: string) => {},
+    handleChange = () => {},
   } = props;
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {

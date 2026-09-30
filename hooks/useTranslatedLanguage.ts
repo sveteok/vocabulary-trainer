@@ -1,4 +1,4 @@
-import { useEffect, useContext } from "react";
+import { useContext } from "react";
 import { useRouter } from "next/navigation";
 
 import { DictionaryContext, FormType } from "@/store/dict-context";

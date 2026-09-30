@@ -1,6 +1,6 @@
 import { useEffect, useRef, RefObject } from "react";
 
-export function useQuizeBtnControl({
+export function useQuizBtnControl({
   isRestartBtnInFocus,
   isNextBtnInFocus,
 }: {

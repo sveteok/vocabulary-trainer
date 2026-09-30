@@ -17,7 +17,7 @@ export function CategoryWrapper({
 
   useEffect(() => {
     feedLocalizedCategories(localizedCategories);
-  }, [form.category]);
+  }, [feedLocalizedCategories, form.category, localizedCategories]);
 
   return <>{children}</>;
 }

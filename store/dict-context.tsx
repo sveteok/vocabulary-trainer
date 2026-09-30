@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { createContext, useReducer } from "react";
+import { createContext, useCallback, useReducer } from "react";
 
 import {
   LanguagesProps,
@@ -101,12 +101,12 @@ const initData = {
 
 const initFormData = {
   form: initData,
-  updateDataById: (field_name: string, id: string, name?: string) => {},
-  updateDataByName: (field_name: string, name: string) => {},
-  updateWordPairs: (wordPairs: WordPairsProp[]) => {},
-  updateWordSelectedState: (id: string, checked: boolean) => {},
-  feedLocalizedCategories: (categories: CategoryProps[]) => {},
-  feedLocalizedLanguages: (languages: LanguagesProps[]) => {},
+  updateDataById: () => {},
+  updateDataByName: () => {},
+  updateWordPairs: () => {},
+  updateWordSelectedState: () => {},
+  feedLocalizedCategories: () => {},
+  feedLocalizedLanguages: () => {},
 };
 
 export const DictionaryContext =
@@ -173,7 +173,7 @@ function formReducer(state: FormType, action: ActionType): FormType {
       [`${payload.field_name}_name`]: name,
     };
   } else if (type === DictActionTypes.UPDATE_DATA_BY_NAME) {
-    let item = state.languages?.find(
+    const item = state.languages?.find(
       (el) =>
         payload.name && el.name.toLowerCase() === payload.name.toLowerCase()
     );
@@ -291,18 +291,21 @@ export default function DictionaryContextProvider({
     })
   );
 
-  const updateDataById = (field_name: string, id: string, name?: string) => {
-    formDispatch({
-      type: DictActionTypes.UPDATE_DATA_BY_ID,
-      payload: {
-        field_name,
-        id,
-        name,
-      },
-    });
-  };
+  const updateDataById = useCallback(
+    (field_name: string, id: string, name?: string) => {
+      formDispatch({
+        type: DictActionTypes.UPDATE_DATA_BY_ID,
+        payload: {
+          field_name,
+          id,
+          name,
+        },
+      });
+    },
+    []
+  );
 
-  const updateDataByName = (field_name: string, name: string) => {
+  const updateDataByName = useCallback((field_name: string, name: string) => {
     formDispatch({
       type: DictActionTypes.UPDATE_DATA_BY_NAME,
       payload: {
@@ -310,18 +313,18 @@ export default function DictionaryContextProvider({
         name,
       },
     });
-  };
+  }, []);
 
-  const updateWordPairs = (wordPairs: WordPairsProp[]) => {
+  const updateWordPairs = useCallback((wordPairs: WordPairsProp[]) => {
     formDispatch({
       type: DictActionTypes.UPDATE_WORD_PAIRS,
       payload: {
         wordPairs,
       },
     });
-  };
+  }, []);
 
-  const updateWordSelectedState = (id: string, checked: boolean) => {
+  const updateWordSelectedState = useCallback((id: string, checked: boolean) => {
     formDispatch({
       type: DictActionTypes.UPDATE_WORD_SELECT_STATE,
       payload: {
@@ -329,21 +332,21 @@ export default function DictionaryContextProvider({
         checked,
       },
     });
-  };
+  }, []);
 
-  const feedLocalizedCategories = (categories: CategoryProps[]) => {
+  const feedLocalizedCategories = useCallback((categories: CategoryProps[]) => {
     formDispatch({
       type: DictActionTypes.FEED_LOCALIZED_CATEGORIES,
       payload: { categories },
     });
-  };
+  }, []);
 
-  const feedLocalizedLanguages = (languages: LanguagesProps[]) => {
+  const feedLocalizedLanguages = useCallback((languages: LanguagesProps[]) => {
     formDispatch({
       type: DictActionTypes.FEED_LOCALIZED_LANGUAGES,
       payload: { languages },
     });
-  };
+  }, []);
 
   const ctxValue = {
     form,

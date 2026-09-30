@@ -15,10 +15,13 @@ export default function LangFromPage() {
 
   const dictContext = useContext(DictionaryContext);
   const { form, updateDataById } = dictContext;
+  const firstLanguageId = form.languages[0]?.id;
 
   useEffect(() => {
-    if (!form.language) updateDataById("language", form.languages[0].id);
-  }, [form.language, updateDataById]);
+    if (!form.language && firstLanguageId) {
+      updateDataById("language", firstLanguageId);
+    }
+  }, [firstLanguageId, form.language, updateDataById]);
 
   return (
     <>

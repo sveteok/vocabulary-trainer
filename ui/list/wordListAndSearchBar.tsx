@@ -5,7 +5,6 @@ import { useFilteredList } from "@/hooks/useFilteredList";
 
 import SeachForm from "@/ui/basis/seachForm";
 import WordRow from "@/ui/list/wordRow";
-import { KeyboardEventHandler } from "react";
 
 const WordListAndSearchBar = ({
   list,
@@ -65,7 +64,7 @@ const WordListAndSearchBar = ({
         className={`flex-1 flex flex-col items-stretch mt-4 gap-0`}
       >
         <div className="grid grid-cols-1 gap-1">
-          {filteredList.map((item, i) => (
+          {filteredList.map((item) => (
             <WordRow
               key={item.id}
               item={item}

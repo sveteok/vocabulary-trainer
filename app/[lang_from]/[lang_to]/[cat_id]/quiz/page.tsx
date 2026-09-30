@@ -1,7 +1,7 @@
 import WordsWrapper from "@/ui/basis/wordsWrapper";
-import { QuizeCards } from "@/ui/cards/quize/quizeCards";
+import { QuizCards } from "@/ui/cards/quiz/quizCards";
 
-export default async function QuizePage({
+export default async function QuizPage({
   params,
 }: {
   params: Promise<{
@@ -12,7 +12,7 @@ export default async function QuizePage({
 }) {
   return (
     <WordsWrapper params={await params}>
-      <QuizeCards />
+      <QuizCards />
     </WordsWrapper>
   );
 }

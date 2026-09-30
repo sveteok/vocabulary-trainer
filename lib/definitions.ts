@@ -67,7 +67,7 @@ export type WordProp = {
   description?: string;
 };
 
-export interface QuizeCardProp {
+export interface QuizCardProp {
   word: WordPairsProp;
   answers: KeyValueObjectType[];
   selectedWordId?: string;

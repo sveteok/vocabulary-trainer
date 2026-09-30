@@ -4,7 +4,7 @@ import { useEffect, useContext } from "react";
 import { usePathname, useParams, useRouter } from "next/navigation";
 
 import { DictionaryContext } from "@/store/dict-context";
-import { useLocalSrorageSelectedWords } from "@/hooks/useLocalSrorageSelectedWords";
+import { getLocalStorageSelectedWords } from "@/hooks/getLocalStorageSelectedWords";
 import { WordPairsProp } from "@/lib/definitions";
 
 type WordsContextWrapperProps = {
@@ -24,11 +24,11 @@ export default function WordsContextWrapper({
     cat_id: string;
   }>();
 
-  let language = params.lang_from;
-  let translation_language = params.lang_to;
-  let category = params.cat_id;
+  const language = params.lang_from;
+  const translation_language = params.lang_to;
+  const category = params.cat_id;
 
-  let pageType = pathname
+  const pageType = pathname
     .replace(`/${language}/${translation_language}/${category}`, "")
     .replace("/", "");
 
@@ -36,7 +36,7 @@ export default function WordsContextWrapper({
   const { updateWordPairs } = dictContext;
 
   useEffect(() => {
-    const { updatedWordPairs, selectedWordList } = useLocalSrorageSelectedWords(
+    const { updatedWordPairs, selectedWordList } = getLocalStorageSelectedWords(
       wordPairs,
       pageType
     );
@@ -46,7 +46,15 @@ export default function WordsContextWrapper({
     }
 
     updateWordPairs(updatedWordPairs);
-  }, [wordPairs]);
+  }, [
+    category,
+    language,
+    pageType,
+    router,
+    translation_language,
+    updateWordPairs,
+    wordPairs,
+  ]);
 
   return <>{children}</>;
 }

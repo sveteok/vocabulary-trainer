@@ -26,7 +26,7 @@ export default function MenuPage() {
         />
         <MenuButton
           label={form.localization?.quiz || "Quiz"}
-          onClick={() => router.push(`${pathname}/../quize`)}
+          onClick={() => router.push(`${pathname}/../quiz`)}
         />
         <MenuButton
           label={form.localization?.writing || "Writing"}

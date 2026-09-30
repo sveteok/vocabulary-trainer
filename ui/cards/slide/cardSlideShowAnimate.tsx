@@ -1,4 +1,4 @@
-import { motion, AnimatePresence, cubicBezier } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 const CardSlideShowAnimate = ({
   children,

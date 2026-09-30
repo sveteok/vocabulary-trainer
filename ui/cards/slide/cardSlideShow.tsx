@@ -26,7 +26,6 @@ export const CardSlideShow = () => {
     isPrevButtonDisabled,
     isNextButtonDisabled,
     pageCount,
-    restartButtonRef,
   } = useSlideShow({
     wordPairs: form.wordPairs,
   });

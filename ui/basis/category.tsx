@@ -15,12 +15,13 @@ export function Category() {
 
   const dictContext = useContext(DictionaryContext);
   const { form, updateDataById } = dictContext;
+  const firstLocalizedCategoryId = form.localizedCategories?.[0]?.id;
 
   useEffect(() => {
-    if (!form.category) {
-      updateDataById("category", form.localizedCategories?.[0].id || "");
+    if (!form.category && firstLocalizedCategoryId) {
+      updateDataById("category", firstLocalizedCategoryId);
     }
-  }, []);
+  }, [firstLocalizedCategoryId, form.category, updateDataById]);
 
   return (
     <>

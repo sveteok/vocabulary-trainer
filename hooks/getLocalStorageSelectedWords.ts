@@ -10,7 +10,7 @@ interface LocalWordsPairProp {
   selectedWordList: string[];
 }
 
-export function useLocalSrorageSelectedWords(
+export function getLocalStorageSelectedWords(
   list: WordPairsProp[],
   pageType: string
 ): LocalWordsPairProp {
@@ -19,11 +19,11 @@ export function useLocalSrorageSelectedWords(
       ? list.length
       : MAX_NUMBER_WORDS_TO_STUDY;
 
-  let learnedWordsLocalStorage: string[] = JSON.parse(
+  const learnedWordsLocalStorage: string[] = JSON.parse(
     localStorage.getItem("learnedWords") || "[]"
   );
 
-  let selectedWordsLocalStorage: string[] = JSON.parse(
+  const selectedWordsLocalStorage: string[] = JSON.parse(
     localStorage.getItem("selectedWords") || "[]"
   );
 
@@ -54,10 +54,10 @@ export function useLocalSrorageSelectedWords(
     return 0;
   });
 
-  let selectedWordList: string[] = [];
+  const selectedWordList: string[] = [];
 
   updatedWordPairs = updatedWordPairs.map((item) => {
-    let isLearnedWord = learnedWordsLocalStorage.includes(item.id);
+    const isLearnedWord = learnedWordsLocalStorage.includes(item.id);
     let isSelectedWord = false;
 
     if (max_number_words > 0 && selectedWordsLocalStorage.includes(item.id)) {
@@ -68,7 +68,7 @@ export function useLocalSrorageSelectedWords(
     return { ...item, learned: isLearnedWord, selected: isSelectedWord };
   });
 
-  let min_number_words = MIN_NUMBER_WORDS_TO_STUDY;
+  const min_number_words = MIN_NUMBER_WORDS_TO_STUDY;
   if (
     min_number_words < maxNumToSelect &&
     selectedWordList.length < min_number_words

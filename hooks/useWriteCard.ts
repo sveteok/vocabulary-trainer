@@ -1,5 +1,5 @@
-import { useState, useEffect, useContext, useRef, RefObject } from "react";
-import { WordPairsProp, LocalizationProps } from "@/lib/definitions";
+import { useState, useEffect, useContext, RefObject } from "react";
+import { WordPairsProp } from "@/lib/definitions";
 import { DictionaryContext, FormType } from "@/store/dict-context";
 import { useWriteBtnControl } from "@/hooks/useWriteBtnControl";
 

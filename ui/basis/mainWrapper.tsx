@@ -33,10 +33,6 @@ export const MainWrapper = ({
     cat_id: string;
   }>();
 
-  if (pathname.length > 1 && Object.keys(params).length === 0) {
-    return <NotFoundDisplay />;
-  }
-
   const language = params.lang_from;
   const translation_language = params.lang_to;
   const category = params.cat_id;
@@ -55,6 +51,10 @@ export const MainWrapper = ({
     setData({ languages, categories, localization });
   }, [languages, categories, localization]);
 
+  if (pathname.length > 1 && Object.keys(params).length === 0) {
+    return <NotFoundDisplay />;
+  }
+
   if (data === null) {
     return <></>;
   }
@@ -67,8 +67,6 @@ export const MainWrapper = ({
     category,
     gameType,
   });
-
-  console.log("Result isValid:   ", isValid);
 
   if (!isValid) {
     return <NotFoundDisplay />;
@@ -109,14 +107,12 @@ const validatePath = (props: {
   if (language) {
     const language_name = languages.find((el) => el.id === language)?.name;
     if (language && !language_name) {
-      console.log(1);
       return { isValid: false };
     }
   }
 
   if (language && translation_language) {
     if (language === translation_language) {
-      console.log(2);
       return { isValid: false };
     }
 
@@ -125,7 +121,6 @@ const validatePath = (props: {
     )?.name;
 
     if (!translation_language_name) {
-      console.log(3);
       return { isValid: false };
     }
   }
@@ -133,7 +128,6 @@ const validatePath = (props: {
   if (language && translation_language && category) {
     const category_name = categories.find((el) => el.id === category)?.name;
     if (!category_name) {
-      console.log(4);
       return { isValid: false };
     }
   }
@@ -143,9 +137,8 @@ const validatePath = (props: {
     translation_language &&
     category &&
     gameType &&
-    !["cards", "match", "quize", "test", "write", "menu"].includes(gameType)
+    !["cards", "match", "quiz", "test", "write", "menu"].includes(gameType)
   ) {
-    console.log(5);
     return { isValid: false };
   }
 

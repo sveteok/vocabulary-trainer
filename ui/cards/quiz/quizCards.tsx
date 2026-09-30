@@ -4,17 +4,17 @@ import React, { useContext } from "react";
 import NavigateNextRoundedIcon from "@mui/icons-material/NavigateNextRounded";
 
 import { DictionaryContext } from "@/store/dict-context";
-import { useQuizeCard } from "@/hooks/useQuizeCard";
-import { useQuizeBtnControl } from "@/hooks/useQuizeBtnControl";
+import { useQuizCard } from "@/hooks/useQuizCard";
+import { useQuizBtnControl } from "@/hooks/useQuizBtnControl";
 
 import MainContainer from "@/ui/basis/mainContainer";
-import QuizeRadioGroup from "@/ui/cards/quize/quizeRadioGroup";
+import QuizRadioGroup from "@/ui/cards/quiz/quizRadioGroup";
 import ProgressBar from "@/ui/basis/progressBar";
 import Card from "@/ui/basis/card";
 import GameOver from "@/ui/basis/gameOver";
 import SubMenu from "@/ui/basis/subMenu";
 
-export const QuizeCards = () => {
+export const QuizCards = () => {
   const dictContext = useContext(DictionaryContext);
   const { form } = dictContext;
 
@@ -27,12 +27,11 @@ export const QuizeCards = () => {
     isNextBtnDisabled,
     total,
     remaining,
-  } = useQuizeCard({
+  } = useQuizCard({
     wordPairs: form.wordPairs,
   });
 
-  const { nextButtonRef, restartButtonRef } = useQuizeBtnControl({
-    isRestartBtnInFocus: isGameDone,
+  const { nextButtonRef } = useQuizBtnControl({
     isNextBtnInFocus: wordCard?.selectedWordId !== undefined,
   });
 
@@ -63,7 +62,7 @@ export const QuizeCards = () => {
         handleOnChange={() => getNextCardHandler(false)}
       >
         <section
-          aria-label="quize"
+          aria-label="quiz"
           className="flex flex-col content-end size-full"
         >
           {isGameDone ? (
@@ -77,7 +76,7 @@ export const QuizeCards = () => {
                 className="flex flex-1 min-h-[80px]"
               />
               <div className="flex ">
-                <QuizeRadioGroup
+                <QuizRadioGroup
                   name="Answers"
                   options={wordCard?.answers}
                   correctAnswerId={wordCard?.word.translated_word_id}

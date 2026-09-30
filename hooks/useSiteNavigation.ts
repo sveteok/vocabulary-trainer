@@ -1,22 +1,8 @@
-import { useEffect, useState } from "react";
-import { usePathname, useParams, useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { useParams } from "next/navigation";
 
 import { useContext } from "react";
 import { DictionaryContext, FormType } from "@/store/dict-context";
-
-import { getCachedCategories } from "@/lib/data";
-import { LocalizationProps } from "@/lib/definitions";
-
-interface siteNavigationPromiseType {
-  language?: string;
-  language_name?: string;
-  translation_language?: string;
-  translation_language_name?: string;
-  category?: string;
-  category_name?: string;
-  gameType: string;
-  localization: LocalizationProps;
-}
 
 export function useSiteNavigation(): {
   form: FormType;
@@ -64,11 +50,13 @@ export function useSiteNavigation(): {
     language,
     translation_language,
     category,
-    form.categories,
     form.language,
+    form.language_name,
     form.translation_language,
-    form.localization,
+    form.translation_language_name,
     form.category,
+    form.category_name,
+    updateDataById,
   ]);
 
   return { form, language, translation_language, category };

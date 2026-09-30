@@ -271,7 +271,6 @@ SELECT *
           queryProp.translation_language,
         ]
       );
-      // console.log(wordPairs.rows);
       return wordPairs.rows;
     }
   } catch (error) {

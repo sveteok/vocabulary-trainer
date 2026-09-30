@@ -36,7 +36,7 @@ export function useWordList(): WordListProp {
       : MAX_NUMBER_WORDS_TO_STUDY;
 
   useEffect(() => {
-    let selectedWordIdList: string[] = [];
+    const selectedWordIdList: string[] = [];
     form.wordPairs?.map((w) => {
       if (w.selected) selectedWordIdList.push(w.id);
     });
@@ -48,7 +48,6 @@ export function useWordList(): WordListProp {
     if (id === "all") {
       const { updatedWordPairs, selectedWordList } = adjustWordSelection(
         wordPairs,
-        selectedWords,
         checked
       );
 
@@ -101,61 +100,30 @@ const updateWordsInLocalStore = (id: string, checked: boolean) => {
 
 const adjustWordSelection = (
   wordPairs: WordPairsProp[],
-  selectedWords: string[],
   selected: boolean
 ): { updatedWordPairs: WordPairsProp[]; selectedWordList: string[] } => {
   let updatedWordPairs = [...(wordPairs || [])];
-  let selectedWordList = [...selectedWords];
+  const selectedWordList: string[] = [];
 
   const maxNumToSelect =
     wordPairs.length < MAX_NUMBER_WORDS_TO_STUDY
       ? wordPairs.length
       : MAX_NUMBER_WORDS_TO_STUDY;
 
-  if (
-    updatedWordPairs.length <= MAX_NUMBER_WORDS_TO_STUDY ||
-    updatedWordPairs.length >= MIN_NUMBER_WORDS_TO_STUDY
-  ) {
-    selectedWordList = [];
+  if (selected) {
     updatedWordPairs = updatedWordPairs.map((w) => {
-      if (selected) {
+      const isSelectedWord = selectedWordList.length < maxNumToSelect;
+      if (isSelectedWord) {
         selectedWordList.push(w.id);
-      }
-      return { ...w, selected: selected };
-    });
-  } else if (selected) {
-    updatedWordPairs = updatedWordPairs.map((w) => {
-      let isSelectedWord = w.selected;
-
-      if (selectedWordList.length < maxNumToSelect && !isSelectedWord) {
-        isSelectedWord = true;
-        selectedWordList.push(w.id);
-      } else if (selectedWordList.length > maxNumToSelect && isSelectedWord) {
-        selectedWordList = selectedWordList.filter((el) => el !== w.id);
       }
       return { ...w, selected: isSelectedWord };
     });
   } else {
-    const minNumberWords = maxNumToSelect - MIN_NUMBER_WORDS_TO_STUDY;
-
-    if (minNumberWords < 0) return { updatedWordPairs, selectedWordList };
-
-    if (selectedWordList.length > minNumberWords) {
-      const elemsToDelete = selectedWordList.length - minNumberWords;
-      selectedWordList.splice(
-        selectedWordList.length - elemsToDelete,
-        elemsToDelete
-      );
-    }
+    const minNumberWords = Math.min(MIN_NUMBER_WORDS_TO_STUDY, maxNumToSelect);
 
     updatedWordPairs = updatedWordPairs.map((w) => {
-      let isSelectedWord = selectedWordList.includes(w.id);
-
-      if (
-        selectedWordList.length < MIN_NUMBER_WORDS_TO_STUDY &&
-        !isSelectedWord
-      ) {
-        isSelectedWord = true;
+      const isSelectedWord = selectedWordList.length < minNumberWords;
+      if (isSelectedWord) {
         selectedWordList.push(w.id);
       }
       return { ...w, selected: isSelectedWord };
