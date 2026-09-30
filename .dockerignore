@@ -1,0 +1,15 @@
+.git
+.next
+build
+coverage
+node_modules
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.DS_Store
+.env
+.env.*
+*.pem
+*.tsbuildinfo
+

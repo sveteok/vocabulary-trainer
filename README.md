@@ -6,7 +6,7 @@
 
 The app is built using the latest technologies, including:
 
-- **Next.js** 15.1.0
+- **Next.js** 16.3.7
 - **PostgreSQL**
 - **TypeScript**
 - **Tailwind CSS**
@@ -79,6 +79,40 @@ To run this project locally or on Vercel, ensure you have:
 6.  **Access the App**
     Open http://localhost:3000 in your browser to view the application.
 
+### Docker Local Development
+
+Use Docker when you want the app and PostgreSQL to run together without installing PostgreSQL locally.
+
+1. Build and start the development stack:
+
+   ```bash
+   docker compose -f docker-compose.dev.yml up --build
+   ```
+
+2. Open the app:
+
+   ```text
+   http://localhost:3000
+   ```
+
+The Compose stack starts PostgreSQL, waits for it to become healthy, seeds the database with placeholder data, and then starts the Next.js development server.
+
+Useful commands:
+
+```bash
+# Stop containers while keeping the database volume
+docker compose -f docker-compose.dev.yml down
+
+# Reset the database and seed from scratch next time
+docker compose -f docker-compose.dev.yml down -v
+
+# Run the seed step manually
+docker compose -f docker-compose.dev.yml run --rm seed
+
+# Use alternate host ports if 3000 or 5432 are busy
+APP_PORT=3001 POSTGRES_PORT=5433 docker compose -f docker-compose.dev.yml up --build
+```
+
 
 
 ### Deployment on Vercel
@@ -128,10 +162,11 @@ To run this project locally or on Vercel, ensure you have:
    ```json
     "scripts": {
         "dev": "next dev --turbopack",
-        "build": "next build",
+        "build": "next build --webpack",
         "start": "next start",
-        "lint": "next lint",
-        "seed": "node -r dotenv/config --loader ts-node/esm ./scripts/seed.ts"
+        "lint": "eslint app hooks ui lib store",
+        "seed": "tsx scripts/seed.ts",
+        "seed:local": "tsx scripts/seedLocalDB.ts"
     }
     ```
 
@@ -160,7 +195,7 @@ To run this project locally or on Vercel, ensure you have:
     │   ├── [lang_from]/[lang_to]/[cat_id]/
     │   │   ├── cards/      # Flashcards training mode
     │   │   ├── match/      # Memory match training mode
-    │   │   ├── quize/      # Quiz training mode
+    │   │   ├── quiz/       # Quiz training mode
     │   │   ├── write/      # Writing training mode
     ├── hooks/              # Custom React hooks for various components
     ├── ui/                 # UI components and layouts

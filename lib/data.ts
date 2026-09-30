@@ -1,6 +1,7 @@
 "use server";
 
 import { sql } from "@vercel/postgres";
+import * as localDb from "@/lib/data_local_db";
 
 import {
   LanguagesProps,
@@ -12,7 +13,13 @@ import {
 
 import { unstable_cache } from "next/cache";
 
+const isLocalPostgres = () => process.env.USE_LOCAL_POSTGRES === "true";
+
 export async function fetchLocalization(): Promise<AllLocalizationCodeProps> {
+  if (isLocalPostgres()) {
+    return localDb.fetchLocalization();
+  }
+
   try {
     const languages = await sql`
       WITH localization_keys AS (
@@ -52,6 +59,10 @@ export const getCachedCategories = unstable_cache(
 );
 
 export async function fetchAllLanguages(): Promise<LanguagesProps[]> {
+  if (isLocalPostgres()) {
+    return localDb.fetchAllLanguages();
+  }
+
   // noStore();
 
   try {
@@ -101,6 +112,10 @@ export const getInitData = unstable_cache(
 export async function fetchAllCategories(
   language_code?: string
 ): Promise<CategoryProps[]> {
+  if (isLocalPostgres()) {
+    return localDb.fetchAllCategories(language_code);
+  }
+
   // noStore();
 
   try {
@@ -136,6 +151,10 @@ export const getCachedCardSets = unstable_cache(
 export async function getWordPairs(
   queryProp: WordPairsQueryProp
 ): Promise<WordPairsProp[]> {
+  if (isLocalPostgres()) {
+    return localDb.getWordPairs(queryProp);
+  }
+
   try {
     if (queryProp.language === "en") {
       const wordPairs = await sql<WordPairsProp>`

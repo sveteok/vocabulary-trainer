@@ -1,6 +1,3 @@
-"use server";
-// import "@/envConfig";
-
 import { Client } from "pg";
 import pg from "pg";
 
@@ -119,7 +116,7 @@ import {
   wordPairs_en_ja_time_dates,
   wordPairs_en_ko_time_dates,
   wordPairs_en_ar_time_dates,
-} from "@/lib/placeholder-data";
+} from "../lib/placeholder-data";
 
 import {
   LanguagesProps,
@@ -128,7 +125,7 @@ import {
   WordPairsProps,
   LocalizationProps,
   wordPairsType,
-} from "@/lib/definitions";
+} from "../lib/definitions";
 
 async function seedLanguages(client: Client) {
   try {
@@ -494,13 +491,12 @@ async function connectToDb() {
 
 async function main() {
   const client = await connectToDb();
-  // await setupDatabase(client);
-  // await seedLanguages(client);
-  // await seedCategories(client);
-  // await seedCategoryTranslations(client);
+  await seedLanguages(client);
+  await seedCategories(client);
+  await seedCategoryTranslations(client);
   await seedWords(client);
   await seedWordPairs(client);
-  // await seedLocalization(client);
+  await seedLocalization(client);
 
   // /** category: id: "5a7f36b6-7c4e-4cf6-930b-bf7f4d7b6347", name: "Basic Phrases"*/
   await seedCategoryWordPairs({

@@ -124,7 +124,7 @@ import {
   WordPairsProps,
   LocalizationProps,
   wordPairsType,
-} from "@/lib/definitions";
+} from "../lib/definitions";
 
 async function seedLanguages() {
   try {
